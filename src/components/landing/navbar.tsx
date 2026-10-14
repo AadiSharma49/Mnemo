@@ -47,7 +47,7 @@ export function Navbar() {
         <Link href={logHref} className="group flex shrink-0 items-center gap-2">
           <LogoMark
             size={28}
-            className="rounded-lg shadow-md shadow-primary/30 transition-transform duration-300 group-hover:scale-110"
+            className="rounded-lg shadow-md transition-transform duration-300 group-hover:scale-110"
           />
           <span className="font-heading hidden text-sm font-semibold tracking-tight sm:inline">
             Relay<span className="text-primary">OS</span>
@@ -85,7 +85,7 @@ export function Navbar() {
               <Link href="/dashboard" className="hidden sm:inline">
                 <Button
                   size="sm"
-                  className="h-8 rounded-full bg-gradient-to-r from-primary to-violet-500 px-4 text-xs font-semibold text-white shadow-md shadow-primary/25 transition-all hover:shadow-lg hover:shadow-primary/40"
+                  className="h-8 rounded-full bg-primary px-4 text-xs font-semibold text-primary-foreground transition-all"
                 >
                   Dashboard
                 </Button>
@@ -145,7 +145,7 @@ export function Navbar() {
               <Link href="/sign-up" className="hidden sm:inline">
                 <Button
                   size="sm"
-                  className="h-8 rounded-full bg-gradient-to-r from-primary to-violet-500 px-4 text-xs font-semibold text-white shadow-md shadow-primary/25 transition-all hover:shadow-lg hover:shadow-primary/40"
+                  className="h-8 rounded-full bg-primary px-4 text-xs font-semibold text-primary-foreground transition-all"
                 >
                   Get Started
                 </Button>
@@ -188,7 +188,7 @@ export function Navbar() {
               <div className="flex gap-2 pt-2">
                 {isSignedIn ? (
                   <Link href="/dashboard" className="flex-1" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button className="h-9 w-full rounded-full bg-gradient-to-r from-primary to-violet-500 text-xs font-semibold text-white">
+                    <Button className="h-9 w-full rounded-full bg-primary text-xs font-semibold text-white">
                       <Icons.dashboard className="mr-2 h-4 w-4" />
                       Dashboard
                     </Button>
@@ -201,7 +201,7 @@ export function Navbar() {
                       </Button>
                     </Link>
                     <Link href="/sign-up" className="flex-1" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button className="h-9 w-full rounded-full bg-gradient-to-r from-primary to-violet-500 text-xs font-semibold text-white">
+                      <Button className="h-9 w-full rounded-full bg-primary text-xs font-semibold text-white">
                         Get Started
                       </Button>
                     </Link>

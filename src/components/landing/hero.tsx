@@ -2,17 +2,11 @@
 
 import * as React from "react"
 import Link from "next/link"
-import dynamic from "next/dynamic"
 import { useUser } from "@clerk/nextjs"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/lib/icons"
 
-// Lazy, client-only — the animated background never blocks first paint.
-const AuroraBackground = dynamic(
-  () => import("@/components/ui/aurora-background").then((m) => m.AuroraBackground),
-  { ssr: false }
-)
 import {
   SiOpenai,
   SiAnthropic,
@@ -67,67 +61,14 @@ function EcosystemLogos() {
 
 export function Hero() {
   const { isSignedIn } = useUser()
-  // Defer the decorative aurora canvas until the browser is idle so it never
-  // competes with first paint / LCP during load.
-  const [showAurora, setShowAurora] = React.useState(false)
-  React.useEffect(() => {
-    const w = window as Window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
-      cancelIdleCallback?: (id: number) => void
-    }
-    if (w.requestIdleCallback) {
-      const id = w.requestIdleCallback(() => setShowAurora(true), { timeout: 1800 })
-      return () => w.cancelIdleCallback?.(id)
-    }
-    const id = window.setTimeout(() => setShowAurora(true), 1200)
-    return () => clearTimeout(id)
-  }, [])
-
   return (
     <section className="relative flex flex-col items-center justify-center overflow-hidden pt-32 pb-16 sm:pt-40 sm:pb-24">
-      {/* Animated aurora background (deferred to idle, GPU-composited) */}
-      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-        {showAurora && <AuroraBackground className="h-full w-full" intensity={0.55} />}
-      </div>
-
-      {/* Floating glass objects (desktop only, decorative) */}
-      <div className="pointer-events-none absolute inset-0 -z-10 hidden lg:block">
-        <motion.div
-          animate={{ y: [0, -18, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="glass-card absolute left-[7%] top-[30%] flex h-14 w-14 items-center justify-center rounded-2xl"
-        >
-          <Icons.messageSquare className="h-6 w-6 text-blue-400" />
-        </motion.div>
-        <motion.div
-          animate={{ y: [0, 20, 0] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-          className="glass-card absolute right-[9%] top-[26%] flex h-14 w-14 items-center justify-center rounded-2xl"
-        >
-          <Icons.gitBranch className="h-6 w-6 text-violet-400" />
-        </motion.div>
-        <motion.div
-          animate={{ y: [0, -14, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="glass-card absolute bottom-[24%] left-[13%] flex h-12 w-12 items-center justify-center rounded-xl"
-        >
-          <Icons.checkCircle className="h-5 w-5 text-emerald-400" />
-        </motion.div>
-        <motion.div
-          animate={{ y: [0, 16, 0] }}
-          transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-          className="glass-card absolute bottom-[28%] right-[12%] flex h-12 w-12 items-center justify-center rounded-xl"
-        >
-          <Icons.search className="h-5 w-5 text-amber-400" />
-        </motion.div>
-      </div>
-
       <div className="w-full mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: EASING }}
-          className="glass-panel mb-6 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-muted-foreground"
+          className="mb-6 inline-flex items-center gap-2 rounded-full border bg-card px-3.5 py-1.5 text-xs font-medium text-muted-foreground"
         >
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60" />
@@ -157,7 +98,7 @@ export function Hero() {
           <Link href={"/extension" as any}>
             <Button
               size="lg"
-              className="group h-12 border-0 bg-linear-to-r from-primary to-violet-500 px-8 text-base font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/40"
+              className="group h-12 border-0 bg-primary px-8 text-base font-semibold text-primary-foreground transition-all"
             >
               <Icons.plug className="mr-2 h-4 w-4" />
               Get the extension
@@ -168,10 +109,10 @@ export function Hero() {
             <Button
               size="lg"
               variant="outline"
-              className="glass-panel h-12 border-0 px-6 text-base font-medium"
+              className="h-12 px-6 text-base font-medium"
             >
               <Icons.download className="mr-2 h-4 w-4" />
-              or import your chat history
+              or paste a chat link / import history
             </Button>
           </Link>
         </motion.div>

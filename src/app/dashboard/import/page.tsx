@@ -2,7 +2,9 @@
 
 import * as React from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Icons } from "@/lib/icons"
 import { cn } from "@/lib/utils"
 import { parseExport, type ParsedConversation, type ExportSource } from "@/lib/import/parse-export"
@@ -26,6 +28,10 @@ export default function ImportPage() {
   const [parseError, setParseError] = React.useState<string | null>(null)
   const [importing, setImporting] = React.useState(false)
   const [result, setResult] = React.useState<{ imported: number } | null>(null)
+  const router = useRouter()
+  const [shareUrl, setShareUrl] = React.useState("")
+  const [shareLoading, setShareLoading] = React.useState(false)
+  const [shareError, setShareError] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     let cancelled = false
@@ -84,6 +90,26 @@ export default function ImportPage() {
     setSelected(allSelected ? new Set() : new Set(conversations.map((_, i) => i)))
   }
 
+  const importFromUrl = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!workspaceId || !shareUrl.trim()) return
+    setShareLoading(true)
+    setShareError(null)
+    try {
+      const res = await fetch("/api/conversations/import-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: shareUrl.trim(), workspaceId }),
+      })
+      const data = await res.json().catch(() => null)
+      if (!res.ok) throw new Error(data?.error || "Failed to import conversation")
+      router.push(`/dashboard/workspaces/${workspaceId}/conversations/${data.id}` as never)
+    } catch (err) {
+      setShareError(err instanceof Error ? err.message : "Failed to import conversation")
+      setShareLoading(false)
+    }
+  }
+
   const doImport = async () => {
     if (!workspaceId || selected.size === 0) return
     setImporting(true)
@@ -114,11 +140,65 @@ export default function ImportPage() {
     <div className="mx-auto max-w-3xl space-y-8">
       <div>
         <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight">
-          Import your AI history
+          Import your AI chats
         </h1>
         <p className="mt-1 text-muted-foreground">
-          Bring your entire ChatGPT or Claude history into RelayOS in one go.
+          Paste a share link to pull in a single chat, or upload an export file for your whole history.
         </p>
+      </div>
+
+      {/* Share link */}
+      <form onSubmit={importFromUrl} className="space-y-4 rounded-xl border bg-card p-6">
+        <div>
+          <label className="mb-1.5 block text-sm font-medium">Import into workspace</label>
+          {workspaces.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No workspaces yet.{" "}
+              <Link href="/dashboard/workspaces" className="text-primary hover:underline">
+                Create one first
+              </Link>
+              .
+            </p>
+          ) : (
+            <select
+              value={workspaceId}
+              onChange={(e) => setWorkspaceId(e.target.value)}
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+            >
+              {workspaces.map((ws) => (
+                <option key={ws.id} value={ws.id}>
+                  {ws.name}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+        <div>
+          <label className="mb-1.5 block text-sm font-medium">Chat share link</label>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Input
+              type="url"
+              placeholder="https://chatgpt.com/share/…"
+              value={shareUrl}
+              onChange={(e) => setShareUrl(e.target.value)}
+              disabled={shareLoading}
+            />
+            <Button type="submit" disabled={shareLoading || !shareUrl.trim() || !workspaceId}>
+              {shareLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+              {shareLoading ? "Importing…" : "Import chat"}
+            </Button>
+          </div>
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            In ChatGPT, open a chat → Share → Create link, then paste it here. Pulls in the full conversation.
+          </p>
+          {shareError && <p className="mt-2 text-sm text-error">{shareError}</p>}
+        </div>
+      </form>
+
+      <div className="flex items-center gap-3 text-xs uppercase tracking-wide text-muted-foreground">
+        <span className="h-px flex-1 bg-border" />
+        or upload an export file
+        <span className="h-px flex-1 bg-border" />
       </div>
 
       {/* How to export */}

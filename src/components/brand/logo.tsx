@@ -76,7 +76,7 @@ export function Logo({
 }) {
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
-      <LogoMark size={size} className="shadow-md shadow-primary/30 rounded-[22%]" />
+      <LogoMark size={size} className="shadow-md rounded-[22%]" />
       {wordmark && (
         <span className="font-heading text-sm font-semibold tracking-tight">
           Relay<span className="text-primary">OS</span>
