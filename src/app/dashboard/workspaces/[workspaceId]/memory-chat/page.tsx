@@ -405,7 +405,7 @@ export default function MemoryChatPage() {
                       <span className="text-[10px] font-bold text-primary-foreground">You</span>
                     </div>
                   )}
-                  <div className={cn("max-w-[85%] sm:max-w-[70%] rounded-2xl px-4 sm:px-5 py-3.5 relative", msg.role === "user" ? "bg-gradient-to-br from-primary to-primary/90 text-primary-foreground rounded-br-md" : "bg-muted text-foreground border border-border shadow-sm rounded-bl-md")}>
+                  <div className={cn("max-w-[85%] sm:max-w-[70%] rounded-2xl px-4 sm:px-5 py-3.5 relative", msg.role === "user" ? "bg-primary text-primary-foreground rounded-br-md" : "bg-muted text-foreground border border-border shadow-sm rounded-bl-md")}>
                     <div className="text-sm leading-relaxed">{renderMarkdown(msg.content)}</div>
                     {msg.timestamp && (
                       <div className="mt-1 text-[10px] opacity-0 group-hover:opacity-60 transition-opacity">

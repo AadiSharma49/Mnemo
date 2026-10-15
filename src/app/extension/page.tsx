@@ -69,7 +69,7 @@ export default function ExtensionPage() {
             <a
               href="/relayos-extension.zip"
               download
-              className="inline-flex items-center gap-2 rounded-xl bg-linear-to-r from-primary to-violet-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:bg-primary/90"
             >
               <Icons.download className="h-4 w-4" />
               Download extension (.zip)

@@ -169,7 +169,6 @@ export function LiveDemo() {
   return (
     <section id="try-it" className="relative overflow-hidden py-24 sm:py-32">
       {/* soft glow */}
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]" />
 
       <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <AnimatedSection>
@@ -212,7 +211,7 @@ export function LiveDemo() {
               </div>
               <button
                 type="submit"
-                className="rounded-xl bg-linear-to-r from-primary to-violet-500 px-5 py-3 text-sm font-medium text-white shadow-sm transition-opacity hover:opacity-90"
+                className="rounded-xl bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-sm transition-opacity hover:bg-primary/90"
               >
                 Search
               </button>
@@ -277,7 +276,7 @@ export function LiveDemo() {
                 </p>
                 <Link
                   href="/sign-up"
-                  className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-linear-to-r from-primary to-violet-500 px-4 py-2 text-sm font-medium text-white shadow-sm transition-opacity hover:opacity-90"
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-opacity hover:bg-primary/90"
                 >
                   Start free
                   <Icons.arrowRight className="h-4 w-4" />

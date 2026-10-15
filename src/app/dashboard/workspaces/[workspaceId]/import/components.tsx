@@ -10,29 +10,30 @@ import { Input } from "@/components/ui/input"
 
 /**
  * Capture options, ordered by how we want people to add conversations:
- *   1. Browser extension  — one-click automatic capture (the primary path)
- *   2. File import        — bulk history upload
- *   3. Paste manually     — secondary fallback, tucked behind a toggle
+ *   1. Share link         — paste a public chat URL, no install needed
+ *   2. Browser extension  — one-click automatic capture
+ *   3. File import        — bulk history upload
+ *   4. Paste manually     — secondary fallback, tucked behind a toggle
  */
 export function CaptureOptions({ workspaceId }: { workspaceId: string }) {
   const [showPaste, setShowPaste] = React.useState(false)
 
   return (
     <div className="space-y-4">
-      {/* 1 — Browser extension (primary) */}
+      {/* 1 — Share link (primary) */}
+      <ImportFromUrlForm workspaceId={workspaceId} />
+
+      {/* 2 — Browser extension */}
       <Link
         href={"/extension" as any}
-        className="group flex items-center gap-4 rounded-xl border-2 border-primary/30 bg-primary/5 p-5 transition-all hover:border-primary/50 hover:shadow-md"
+        className="group flex items-center gap-4 rounded-xl border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md"
       >
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/15">
-          <Icons.plug className="h-5 w-5 text-primary" />
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-muted">
+          <Icons.plug className="h-5 w-5 text-foreground" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <p className="font-semibold">Capture with the browser extension</p>
-            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
-              Recommended
-            </span>
           </div>
           <p className="mt-0.5 text-sm text-muted-foreground">
             One click on any ChatGPT, Claude or Gemini chat — no copy-paste.
@@ -41,7 +42,7 @@ export function CaptureOptions({ workspaceId }: { workspaceId: string }) {
         <Icons.arrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1" />
       </Link>
 
-      {/* 2 — File import (bulk history) */}
+      {/* 3 — File import (bulk history) */}
       <Link
         href={"/dashboard/import" as any}
         className="group flex items-center gap-4 rounded-xl border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md"
@@ -58,7 +59,7 @@ export function CaptureOptions({ workspaceId }: { workspaceId: string }) {
         <Icons.arrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1" />
       </Link>
 
-      {/* 3 — Paste manually (secondary fallback) */}
+      {/* 4 — Paste manually (secondary fallback) */}
       <div className="pt-1 text-center">
         <button
           type="button"
@@ -75,6 +76,71 @@ export function CaptureOptions({ workspaceId }: { workspaceId: string }) {
         </div>
       )}
     </div>
+  )
+}
+
+export function ImportFromUrlForm({ workspaceId }: { workspaceId: string }) {
+  const router = useRouter()
+  const [url, setUrl] = React.useState("")
+  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState<string | null>(null)
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!url.trim()) return
+
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch("/api/conversations/import-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: url.trim(), workspaceId }),
+      })
+      const data = await res.json().catch(() => null)
+      if (!res.ok) throw new Error(data?.error || "Failed to import conversation")
+      router.push(
+        `/dashboard/workspaces/${workspaceId}/conversations/${data.id}` as any
+      )
+      router.refresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to import conversation")
+      setLoading(false)
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="rounded-xl border bg-card p-5">
+      <div className="flex items-start gap-4">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-muted">
+          <Icons.externalLink className="h-5 w-5 text-foreground" />
+        </div>
+        <div className="min-w-0 flex-1 space-y-3">
+          <div>
+            <p className="font-semibold">Import from a share link</p>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              Paste a public ChatGPT share URL — no extension or copy-paste needed.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Input
+              type="url"
+              inputMode="url"
+              placeholder="https://chatgpt.com/share/…"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              disabled={loading}
+              aria-label="Share link"
+            />
+            <Button type="submit" disabled={loading || !url.trim()}>
+              {loading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+              {loading ? "Importing…" : "Import"}
+            </Button>
+          </div>
+          {error && <p className="text-sm text-error">{error}</p>}
+        </div>
+      </div>
+    </form>
   )
 }
 
