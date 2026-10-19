@@ -37,9 +37,9 @@
   --color-info-bg: var(--tw-if-bg);
 
   --radius: 0.5rem;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: Georgia, "Times New Roman", ui-serif, serif;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace;
+  --font-heading: var(--font-sans);
 
   /* Flatten the old violet/blue accents into a quiet slate */
   --color-violet-400: hsl(215 14% 45%);
@@ -127,7 +127,7 @@ html {
 body {
   background-color: var(--tw-bg);
   color: var(--tw-fg);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   overflow-x: clip;
   max-width: 100%;
 }
@@ -468,5 +468,5 @@ body {
 .use-case-border-blue, .use-case-border-purple, .use-case-border-orange, .use-case-border-green {
   border-left: 3px solid var(--tw-bd);
 }
-h1, h2, h3, .font-heading { font-family: var(--font-heading); letter-spacing: -0.01em; }
+h1, h2, h3, .font-heading { font-family: var(--font-heading); letter-spacing: -0.02em; font-weight: 600; }
 canvas { display: none; }

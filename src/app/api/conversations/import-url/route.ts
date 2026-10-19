@@ -1,20 +1,23 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getCurrentUserId } from "@/lib/api-utils"
+import { extractAndSave } from "@/lib/ai/extract-and-save"
 import { fetchSharedConversation, ShareImportError } from "@/lib/import/share-url"
 
 /**
  * POST /api/conversations/import-url
  * Imports a public share link (e.g. a ChatGPT share URL) as a conversation.
  *
- * Body: { url: string, workspaceId: string }
- * Returns: the created Conversation (201)
+ * Body: { url: string, workspaceId: string, autoExtract?: boolean }
+ * Returns: { conversation, duplicate, counts, extractionError }
+ *   201 when created, 200 when the same chat was already imported.
+ *   autoExtract (default false) runs AI extraction and saves the results.
  */
 export async function POST(request: Request) {
   try {
     const userId = await getCurrentUserId()
 
-    let body: { url?: string; workspaceId?: string }
+    let body: { url?: string; workspaceId?: string; autoExtract?: boolean }
     try {
       body = await request.json()
     } catch {
@@ -35,16 +38,41 @@ export async function POST(request: Request) {
     }
 
     const shared = await fetchSharedConversation(url)
+    const content = shared.content.trim()
+    const counts = { decisions: 0, actionItems: 0, questions: 0 }
+
+    // Same chat already imported into this workspace — reuse it.
+    const existing = await prisma.conversation.findFirst({
+      where: { workspaceId, userId, content },
+    })
+    if (existing) {
+      return NextResponse.json(
+        { conversation: existing, duplicate: true, counts, extractionError: null },
+        { status: 200 }
+      )
+    }
 
     const conversation = await prisma.conversation.create({
-      data: {
-        title: shared.title.slice(0, 100),
-        content: shared.content,
+      data: { title: shared.title.slice(0, 100), content, workspaceId, userId },
+    })
+
+    let extractionError: string | null = null
+    if (body.autoExtract) {
+      const out = await extractAndSave({
+        text: content,
+        conversationId: conversation.id,
         workspaceId,
         userId,
-      },
-    })
-    return NextResponse.json(conversation, { status: 201 })
+        source: shared.source,
+      })
+      Object.assign(counts, out.counts)
+      extractionError = out.error
+    }
+
+    return NextResponse.json(
+      { conversation, duplicate: false, counts, extractionError },
+      { status: 201 }
+    )
   } catch (error) {
     if (error instanceof ShareImportError) {
       return NextResponse.json({ error: error.message }, { status: error.status })

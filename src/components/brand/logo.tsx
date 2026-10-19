@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils"
  * RelayOS logo.
  *
  * `LogoMark` — the icon tile (a geometric "R" with a relay-node accent on its
- * leg, nodding to the "Relay" name) on the violet brand gradient.
- * `Logo` — the mark plus the "RelayOS" wordmark (Space Grotesk heading font).
+ * leg, nodding to the "Relay" name) as a flat tile in the theme's primary (ink) colour.
+ * `Logo` — the mark plus the "RelayOS" wordmark (serif heading font).
  *
  * Pure SVG so it stays razor-sharp at every size, from a 16px favicon to a hero.
  */
@@ -20,7 +20,6 @@ export function LogoMark({
   size?: number
   className?: string
 }) {
-  const id = React.useId()
   return (
     <svg
       width={size}
@@ -32,20 +31,13 @@ export function LogoMark({
       aria-label="RelayOS"
       className={className}
     >
-      <defs>
-        <linearGradient id={`${id}-g`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#8b5cf6" />
-          <stop offset="1" stopColor="#6d28d9" />
-        </linearGradient>
-      </defs>
-
       {/* tile */}
-      <rect width="512" height="512" rx="120" fill={`url(#${id}-g)`} />
+      <rect width="512" height="512" rx="120" fill="var(--tw-pr)" />
 
       {/* R glyph */}
       <g
         fill="none"
-        stroke="#ffffff"
+        stroke="var(--tw-pr-fg)"
         strokeWidth="58"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -59,8 +51,8 @@ export function LogoMark({
       </g>
 
       {/* relay node on the leg terminus */}
-      <circle cx="338" cy="372" r="33" fill="#ffffff" />
-      <circle cx="338" cy="372" r="13" fill={`url(#${id}-g)`} />
+      <circle cx="338" cy="372" r="33" fill="var(--tw-pr-fg)" />
+      <circle cx="338" cy="372" r="13" fill="var(--tw-pr)" />
     </svg>
   )
 }
@@ -76,7 +68,7 @@ export function Logo({
 }) {
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
-      <LogoMark size={size} className="shadow-md rounded-[22%]" />
+      <LogoMark size={size} className="rounded-[22%]" />
       {wordmark && (
         <span className="font-heading text-sm font-semibold tracking-tight">
           Relay<span className="text-primary">OS</span>

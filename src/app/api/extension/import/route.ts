@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import { getProvider } from "@/lib/ai/providers/registry"
+import { extractAndSave } from "@/lib/ai/extract-and-save"
 import { getUserFromApiKey, corsPreflight, jsonWithCors } from "@/lib/api-auth"
 
 /**
@@ -13,7 +13,7 @@ import { getUserFromApiKey, corsPreflight, jsonWithCors } from "@/lib/api-auth"
  * ever lost; the failure is reported back in `extractionError`.
  *
  * Body: { workspaceId: string, text: string, source?: string, title?: string }
- * Returns: { conversationId, title, counts, extractionError }
+ * Returns: { conversationId, title, counts, extractionError, duplicate? }
  */
 
 export async function OPTIONS() {
@@ -51,66 +51,36 @@ export async function POST(request: Request) {
 
   const title = body.title?.trim() || deriveTitle(text, source)
 
+  // Same text already captured in this workspace? Return it instead of duplicating.
+  const existing = await prisma.conversation.findFirst({
+    where: { workspaceId, userId: user.id, content: text.trim() },
+    select: { id: true, title: true },
+  })
+  if (existing) {
+    return jsonWithCors(
+      {
+        conversationId: existing.id,
+        title: existing.title,
+        counts: { decisions: 0, actionItems: 0, questions: 0 },
+        extractionError: null,
+        duplicate: true,
+      },
+      { status: 200 }
+    )
+  }
+
   // Always persist the raw conversation first — never lose a capture
   const conversation = await prisma.conversation.create({
     data: { title, content: text.trim(), workspaceId, userId: user.id },
   })
 
-  const counts = { decisions: 0, actionItems: 0, questions: 0 }
-  let extractionError: string | null = null
-
-  try {
-    const provider = getProvider()
-    const result = await provider.extractConversation(text)
-    const src = source || "extension"
-
-    if (result.decisions?.length) {
-      await prisma.decision.createMany({
-        data: result.decisions.map((d) => ({
-          title: d.title,
-          summary: d.summary,
-          status: d.status || "pending",
-          confidence: typeof d.confidence === "number" ? d.confidence : 0.5,
-          source: src,
-          conversationId: conversation.id,
-          workspaceId,
-          userId: user.id,
-        })),
-      })
-      counts.decisions = result.decisions.length
-    }
-
-    if (result.actionItems?.length) {
-      await prisma.actionItem.createMany({
-        data: result.actionItems.map((a) => ({
-          title: a.title,
-          description: a.description || "",
-          status: "pending",
-          priority: a.priority || "medium",
-          conversationId: conversation.id,
-          workspaceId,
-          userId: user.id,
-        })),
-      })
-      counts.actionItems = result.actionItems.length
-    }
-
-    if (result.questions?.length) {
-      await prisma.question.createMany({
-        data: result.questions.map((q) => ({
-          question: q.question,
-          status: "open",
-          conversationId: conversation.id,
-          workspaceId,
-          userId: user.id,
-        })),
-      })
-      counts.questions = result.questions.length
-    }
-  } catch (error) {
-    extractionError = error instanceof Error ? error.message : "Extraction failed"
-    console.error("[extension/import] extraction failed:", extractionError)
-  }
+  const { counts, error: extractionError } = await extractAndSave({
+    text,
+    conversationId: conversation.id,
+    workspaceId,
+    userId: user.id,
+    source: source || "extension",
+  })
 
   return jsonWithCors(
     { conversationId: conversation.id, title, counts, extractionError },

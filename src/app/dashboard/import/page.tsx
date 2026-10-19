@@ -27,11 +27,13 @@ export default function ImportPage() {
   const [selected, setSelected] = React.useState<Set<number>>(new Set())
   const [parseError, setParseError] = React.useState<string | null>(null)
   const [importing, setImporting] = React.useState(false)
-  const [result, setResult] = React.useState<{ imported: number } | null>(null)
+  const [result, setResult] = React.useState<{ imported: number; duplicates: number } | null>(null)
   const router = useRouter()
   const [shareUrl, setShareUrl] = React.useState("")
   const [shareLoading, setShareLoading] = React.useState(false)
   const [shareError, setShareError] = React.useState<string | null>(null)
+  const [autoExtract, setAutoExtract] = React.useState(true)
+  const [shareNote, setShareNote] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     let cancelled = false
@@ -95,15 +97,20 @@ export default function ImportPage() {
     if (!workspaceId || !shareUrl.trim()) return
     setShareLoading(true)
     setShareError(null)
+    setShareNote(null)
     try {
       const res = await fetch("/api/conversations/import-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: shareUrl.trim(), workspaceId }),
+        body: JSON.stringify({ url: shareUrl.trim(), workspaceId, autoExtract }),
       })
       const data = await res.json().catch(() => null)
       if (!res.ok) throw new Error(data?.error || "Failed to import conversation")
-      router.push(`/dashboard/workspaces/${workspaceId}/conversations/${data.id}` as never)
+      if (data.duplicate) {
+        setShareNote("You already imported this chat — opening the existing copy.")
+        await new Promise((r) => setTimeout(r, 900))
+      }
+      router.push(`/dashboard/workspaces/${workspaceId}/conversations/${data.conversation.id}` as never)
     } catch (err) {
       setShareError(err instanceof Error ? err.message : "Failed to import conversation")
       setShareLoading(false)
@@ -125,7 +132,7 @@ export default function ImportPage() {
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(data.error || "Import failed")
-      setResult({ imported: data.imported })
+      setResult({ imported: data.imported, duplicates: data.duplicates ?? 0 })
       setConversations([])
       setSelected(new Set())
       setSource(null)
@@ -189,8 +196,19 @@ export default function ImportPage() {
             </Button>
           </div>
           <p className="mt-1.5 text-xs text-muted-foreground">
-            In ChatGPT, open a chat → Share → Create link, then paste it here. Pulls in the full conversation.
+            In ChatGPT, open a chat → Share → Create link, then paste it here. Claude and Gemini block server-side fetching — for those, use the browser extension or paste the text.
           </p>
+          <label className="mt-3 flex cursor-pointer items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={autoExtract}
+              onChange={(e) => setAutoExtract(e.target.checked)}
+              disabled={shareLoading}
+              className="h-4 w-4 accent-[var(--tw-pr)]"
+            />
+            Extract decisions, action items and questions automatically
+          </label>
+          {shareNote && <p className="mt-2 text-sm text-muted-foreground">{shareNote}</p>}
           {shareError && <p className="mt-2 text-sm text-error">{shareError}</p>}
         </div>
       </form>
@@ -219,7 +237,8 @@ export default function ImportPage() {
         <div className="flex items-center justify-between rounded-xl border border-success/30 bg-success/5 px-4 py-3">
           <div className="flex items-center gap-2 text-sm text-success">
             <Icons.checkCircle className="h-5 w-5" />
-            Imported {result.imported} conversation{result.imported === 1 ? "" : "s"}. Open a
+            Imported {result.imported} conversation{result.imported === 1 ? "" : "s"}
+            {result.duplicates > 0 ? ` (${result.duplicates} already imported, skipped)` : ""}. Open a
             conversation to extract decisions.
           </div>
           <Link href={`/dashboard/workspaces/${workspaceId}`}>

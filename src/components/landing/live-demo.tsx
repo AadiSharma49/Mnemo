@@ -77,9 +77,9 @@ const SAMPLE_DECISIONS: SampleDecision[] = [
   },
   {
     id: "d7",
-    title: "Adopt a violet + space-grotesk brand identity",
+    title: "Adopt a flat, classic brand identity",
     summary:
-      "Violet primary with a clean glassmorphism UI and Space Grotesk for headings — modern, distinct, and legible in light and dark.",
+      "Ink-navy primary, plain bordered cards and the system font — simple, classic, and legible in light and dark.",
     workspace: "Design",
     concepts: ["design", "frontend"],
   },

@@ -21,7 +21,7 @@ export default function OpengraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "linear-gradient(135deg, #0a0a0f 0%, #1a1030 60%, #2a1550 100%)",
+          background: "#14120f",
           padding: "80px",
           fontFamily: "sans-serif",
         }}
@@ -33,11 +33,11 @@ export default function OpengraphImage() {
               width: "72px",
               height: "72px",
               borderRadius: "18px",
-              background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+              background: "#e9e4d6",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "white",
+              color: "#14120f",
               fontSize: "42px",
               fontWeight: 700,
             }}
@@ -66,9 +66,7 @@ export default function OpengraphImage() {
               fontWeight: 700,
               lineHeight: 1.05,
               letterSpacing: "-0.02em",
-              background: "linear-gradient(90deg, #a78bfa, #c4b5fd)",
-              backgroundClip: "text",
-              color: "transparent",
+              color: "#e9e4d6",
             }}
           >
             RelayOS gives it memory.

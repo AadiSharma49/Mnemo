@@ -58,12 +58,32 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No valid conversations to import" }, { status: 400 })
     }
 
-    const result = await prisma.conversation.createMany({ data: rows })
+    // Skip chats already in this workspace (and repeats within the file itself).
+    const existing = await prisma.conversation.findMany({
+      where: { workspaceId, userId, content: { in: rows.map((r) => r.content) } },
+      select: { content: true },
+    })
+    const known = new Set(existing.map((e) => e.content))
+    const fresh = rows.filter((r) => {
+      if (known.has(r.content)) return false
+      known.add(r.content)
+      return true
+    })
+
+    if (fresh.length === 0) {
+      return NextResponse.json(
+        { imported: 0, skipped: conversations.length, duplicates: rows.length },
+        { status: 200 }
+      )
+    }
+
+    const result = await prisma.conversation.createMany({ data: fresh })
 
     return NextResponse.json(
       {
         imported: result.count,
         skipped: conversations.length - result.count,
+        duplicates: rows.length - fresh.length,
       },
       { status: 201 }
     )
