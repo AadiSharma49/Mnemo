@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { APP_NAME } from "@/lib/constants"
+import { LogoMark } from "@/components/brand/logo"
 import { SettleText } from "@/components/ui/settle-text"
 
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
@@ -41,9 +42,7 @@ export function Footer() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-3">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <span className="text-sm font-bold text-primary-foreground">R</span>
-              </div>
+              <LogoMark size={32} className="rounded-lg" />
               <span className="font-heading text-base font-semibold tracking-tight">{APP_NAME}</span>
             </Link>
             <p className="max-w-xs text-sm text-muted-foreground">

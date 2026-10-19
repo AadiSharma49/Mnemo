@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { ModeToggle } from "@/components/mode-toggle"
 import { Icons } from "@/lib/icons"
 import { APP_NAME, SIDEBAR_NAV } from "@/lib/constants"
+import { LogoMark } from "@/components/brand/logo"
 import {
   Tooltip,
   TooltipContent,
@@ -46,11 +47,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
       <div className="flex h-16 items-center justify-between px-4">
         {!isCollapsed && (
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <span className="text-sm font-bold text-primary-foreground">
-                R
-              </span>
-            </div>
+            <LogoMark size={32} className="rounded-lg" />
             <span className="text-lg font-semibold tracking-tight">
               {APP_NAME}
             </span>
@@ -59,9 +56,9 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         {isCollapsed && (
           <Link
             href="/dashboard"
-            className="mx-auto flex h-8 w-8 items-center justify-center rounded-lg bg-primary"
+            className="mx-auto flex h-8 w-8 items-center justify-center"
           >
-            <span className="text-sm font-bold text-primary-foreground">R</span>
+            <LogoMark size={32} className="rounded-lg" />
           </Link>
         )}
       </div>

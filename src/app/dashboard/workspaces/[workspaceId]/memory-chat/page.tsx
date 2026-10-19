@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/lib/icons"
+import { LogoMark } from "@/components/brand/logo"
 
 interface Message {
   role: "user" | "assistant"
@@ -396,9 +397,7 @@ export default function MemoryChatPage() {
                   className={cn("flex gap-3 items-start group", msg.role === "user" ? "justify-end" : "justify-start")}
                 >
                   {msg.role === "assistant" && (
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 mt-0.5">
-                      <span className="text-[11px] font-bold text-primary">R</span>
-                    </div>
+                    <LogoMark size={28} className="mt-0.5 shrink-0 rounded-lg" />
                   )}
                   {msg.role === "user" && (
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary mt-0.5 order-last">

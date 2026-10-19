@@ -82,12 +82,15 @@ export function CaptureOptions({ workspaceId }: { workspaceId: string }) {
 export function ImportFromUrlForm({ workspaceId }: { workspaceId: string }) {
   const router = useRouter()
   const [url, setUrl] = React.useState("")
+  const [autoExtract, setAutoExtract] = React.useState(true)
+  const [note, setNote] = React.useState<string | null>(null)
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!url.trim()) return
+    setNote(null)
 
     setLoading(true)
     setError(null)
@@ -95,12 +98,16 @@ export function ImportFromUrlForm({ workspaceId }: { workspaceId: string }) {
       const res = await fetch("/api/conversations/import-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: url.trim(), workspaceId }),
+        body: JSON.stringify({ url: url.trim(), workspaceId, autoExtract }),
       })
       const data = await res.json().catch(() => null)
       if (!res.ok) throw new Error(data?.error || "Failed to import conversation")
+      if (data.duplicate) {
+        setNote("You already imported this chat — opening the existing copy.")
+        await new Promise((r) => setTimeout(r, 900))
+      }
       router.push(
-        `/dashboard/workspaces/${workspaceId}/conversations/${data.id}` as any
+        `/dashboard/workspaces/${workspaceId}/conversations/${data.conversation.id}` as any
       )
       router.refresh()
     } catch (err) {
@@ -119,7 +126,7 @@ export function ImportFromUrlForm({ workspaceId }: { workspaceId: string }) {
           <div>
             <p className="font-semibold">Import from a share link</p>
             <p className="mt-0.5 text-sm text-muted-foreground">
-              Paste a public ChatGPT share URL — no extension or copy-paste needed.
+              Paste a public share link (ChatGPT works today; Perplexity, Claude, Gemini and others are best-effort).
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
@@ -137,6 +144,17 @@ export function ImportFromUrlForm({ workspaceId }: { workspaceId: string }) {
               {loading ? "Importing…" : "Import"}
             </Button>
           </div>
+          <label className="flex cursor-pointer items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={autoExtract}
+              onChange={(e) => setAutoExtract(e.target.checked)}
+              disabled={loading}
+              className="h-4 w-4 accent-[var(--tw-pr)]"
+            />
+            Extract decisions, action items and questions automatically
+          </label>
+          {note && <p className="text-sm text-muted-foreground">{note}</p>}
           {error && <p className="text-sm text-error">{error}</p>}
         </div>
       </div>
