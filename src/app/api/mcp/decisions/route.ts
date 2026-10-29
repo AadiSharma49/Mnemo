@@ -3,7 +3,7 @@ import { getUserFromApiKey, corsPreflight, jsonWithCors } from "@/lib/api-auth"
 
 /**
  * GET /api/mcp/decisions
- * Lists the caller's most recent decisions for the RelayOS MCP server.
+ * Lists the caller's most recent decisions for the Mnemo MCP server.
  * Authenticated with a Bearer API key.
  *
  * Query params: workspaceId?, status?, limit? (default 20, max 100)

@@ -4,11 +4,11 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 /**
- * RelayOS logo.
+ * Mnemo logo.
  *
- * `LogoMark` — the icon tile (a geometric "R" with a relay-node accent on its
- * leg, nodding to the "Relay" name) as a flat tile in the theme's primary (ink) colour.
- * `Logo` — the mark plus the "RelayOS" wordmark (serif heading font).
+ * `LogoMark` — the icon tile (a geometric "M" with a memory-node accent
+ * in its valley) as a flat tile in the theme's primary (ink) colour.
+ * `Logo` — the mark plus the "Mnemo" wordmark (serif heading font).
  *
  * Pure SVG so it stays razor-sharp at every size, from a 16px favicon to a hero.
  */
@@ -28,31 +28,25 @@ export function LogoMark({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="RelayOS"
+      aria-label="Mnemo"
       className={className}
     >
       {/* tile */}
       <rect width="512" height="512" rx="120" fill="var(--tw-pr)" />
 
-      {/* R glyph */}
-      <g
+      {/* M glyph */}
+      <path
+        d="M148 372 V148 L256 282 L364 148 V372"
         fill="none"
         stroke="var(--tw-pr-fg)"
         strokeWidth="58"
         strokeLinecap="round"
         strokeLinejoin="round"
-      >
-        {/* stem */}
-        <path d="M180 140 V372" />
-        {/* bowl */}
-        <path d="M180 140 H255 a66 66 0 0 1 0 132 H180" />
-        {/* leg */}
-        <path d="M232 272 L338 372" />
-      </g>
+      />
 
-      {/* relay node on the leg terminus */}
-      <circle cx="338" cy="372" r="33" fill="var(--tw-pr-fg)" />
-      <circle cx="338" cy="372" r="13" fill="var(--tw-pr)" />
+      {/* memory node in the valley */}
+      <circle cx="256" cy="340" r="26" fill="var(--tw-pr-fg)" />
+      <circle cx="256" cy="340" r="10" fill="var(--tw-pr)" />
     </svg>
   )
 }
@@ -71,7 +65,7 @@ export function Logo({
       <LogoMark size={size} className="rounded-[22%]" />
       {wordmark && (
         <span className="font-heading text-sm font-semibold tracking-tight">
-          Relay<span className="text-primary">OS</span>
+          Mnemo
         </span>
       )}
     </span>

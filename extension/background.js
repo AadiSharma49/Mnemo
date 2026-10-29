@@ -1,4 +1,4 @@
-// RelayOS background service worker (MV3).
+// Mnemo background service worker (MV3).
 // - API-key auth is handled in the popup; this stays light.
 // - Shows a "ready to capture" badge on the toolbar icon when a content script
 //   reports a substantial conversation on the page. This is signal-only — the
@@ -13,10 +13,10 @@ function setReadyBadge(tabId, on) {
     if (on) {
       chrome.action.setBadgeBackgroundColor({ tabId, color: BADGE_COLOR })
       chrome.action.setBadgeText({ tabId, text: "●" })
-      chrome.action.setTitle({ tabId, title: "Conversation ready — click to capture to RelayOS" })
+      chrome.action.setTitle({ tabId, title: "Conversation ready — click to capture to Mnemo" })
     } else {
       chrome.action.setBadgeText({ tabId, text: "" })
-      chrome.action.setTitle({ tabId, title: "Capture to RelayOS" })
+      chrome.action.setTitle({ tabId, title: "Capture to Mnemo" })
     }
   } catch (e) {
     /* tab may have closed — ignore */
@@ -25,7 +25,7 @@ function setReadyBadge(tabId, on) {
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {
-    console.log("[RelayOS] Extension installed.")
+    console.log("[Mnemo] Extension installed.")
   }
 })
 

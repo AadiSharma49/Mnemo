@@ -1,8 +1,8 @@
-# RelayOS — Architecture
+# Mnemo — Architecture
 
 ## System Overview
 
-RelayOS is a **Decision Intelligence Platform** built on Next.js 16 App Router with server components, Clerk authentication, PostgreSQL, and a provider-based AI abstraction layer.
+Mnemo is a **Decision Intelligence Platform** built on Next.js 16 App Router with server components, Clerk authentication, PostgreSQL, and a provider-based AI abstraction layer.
 
 ---
 
@@ -167,7 +167,7 @@ POST /api/conversations
 POST /api/extract
     │
     ▼ user reviews
-RelayOS Web UI
+Mnemo Web UI
     │
     ▼ stores
 PostgreSQL

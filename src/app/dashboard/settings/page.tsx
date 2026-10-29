@@ -1,12 +1,15 @@
 import { Metadata } from "next"
+import { getOrCreateUser } from "@/lib/api-utils"
 import { ApiKeySettings } from "./api-key-settings"
+import { ProfileSettings } from "./profile-settings"
 
 export const metadata: Metadata = {
   title: "Settings",
   description: "Manage your settings",
 }
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const user = await getOrCreateUser()
   return (
     <div className="space-y-6">
       <div>
@@ -16,14 +19,16 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      <ApiKeySettings />
+      <ProfileSettings
+        initial={{
+          firstName: user.firstName ?? "",
+          lastName: user.lastName ?? "",
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+        }}
+      />
 
-      <div className="rounded-xl border bg-card p-6">
-        <h3 className="text-lg font-semibold">Profile</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Manage your profile information.
-        </p>
-      </div>
+      <ApiKeySettings />
 
       <div className="rounded-xl border bg-card p-6">
         <h3 className="text-lg font-semibold">Notifications</h3>

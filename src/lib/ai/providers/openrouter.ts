@@ -48,7 +48,7 @@ export class OpenRouterProvider implements AIProvider {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
         "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-        "X-Title": "RelayOS",
+        "X-Title": "Mnemo",
       },
       body: JSON.stringify({
         model: this.model,

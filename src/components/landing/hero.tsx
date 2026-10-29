@@ -86,7 +86,7 @@ export function Hero() {
         </h1>
 
         <p className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground">
-          One click captures your ChatGPT, Claude, and Gemini chats — RelayOS pulls out the decisions and makes them searchable forever.
+          One click captures your ChatGPT, Claude, and Gemini chats — Mnemo pulls out the decisions and makes them searchable forever.
         </p>
 
         <motion.div

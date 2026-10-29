@@ -146,7 +146,7 @@ export default function ConflictsPage() {
             <Icons.gitBranch className="h-4 w-4 text-primary" />
           </div>
           <div className="text-sm text-muted-foreground">
-            RelayOS compares decisions within each workspace and uses AI to flag genuine
+            Mnemo compares decisions within each workspace and uses AI to flag genuine
             contradictions — reversals, incompatible choices, or changed direction.
           </div>
         </div>

@@ -15,20 +15,20 @@ export const viewport: Viewport = {
 
 // Set NEXT_PUBLIC_SITE_URL to your deployed URL in production so canonical URLs,
 // Open Graph tags and the sitemap all resolve to absolute links.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://relayos.app"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mnemo.app"
 
-const TITLE = "RelayOS — Give Your AI a Memory"
+const TITLE = "Mnemo — Give Your AI a Memory"
 const DESCRIPTION =
-  "RelayOS captures your ChatGPT, Claude and Gemini conversations and automatically extracts the decisions, action items and open questions inside them — then makes them searchable by meaning. Your AI's memory layer."
+  "Mnemo captures your ChatGPT, Claude and Gemini conversations and automatically extracts the decisions, action items and open questions inside them — then makes them searchable by meaning. Your AI's memory layer."
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: TITLE,
-    template: "%s | RelayOS",
+    template: "%s | Mnemo",
   },
   description: DESCRIPTION,
-  applicationName: "RelayOS",
+  applicationName: "Mnemo",
   keywords: [
     "AI conversation memory",
     "decision intelligence",
@@ -40,11 +40,11 @@ export const metadata: Metadata = {
     "semantic search",
     "MCP server",
     "second brain for AI",
-    "RelayOS",
+    "Mnemo",
   ],
-  authors: [{ name: "RelayOS" }],
-  creator: "RelayOS",
-  publisher: "RelayOS",
+  authors: [{ name: "Mnemo" }],
+  creator: "Mnemo",
+  publisher: "Mnemo",
   category: "productivity",
   alternates: {
     canonical: "/",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteUrl,
-    siteName: "RelayOS",
+    siteName: "Mnemo",
     title: TITLE,
     description: DESCRIPTION,
   },
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
-    creator: "@relayos",
+    creator: "@mnemo",
   },
   robots: {
     index: true,
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "RelayOS",
+  name: "Mnemo",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web, Chrome Extension",
   description: DESCRIPTION,

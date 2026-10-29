@@ -1,6 +1,6 @@
-# RelayOS
+# Mnemo
 
-**A memory layer for your AI conversations.** RelayOS captures your ChatGPT,
+**A memory layer for your AI conversations.** Mnemo captures your ChatGPT,
 Claude and Gemini chats, uses AI to extract the **decisions**, **action items**
 and **open questions** inside them, and makes them searchable by meaning — so the
 reasoning you produce with AI doesn't vanish the moment you close the tab.
@@ -13,7 +13,7 @@ Context Protocol**, so your assistant can read your past decisions while you wor
 ## Features
 
 - **One-click capture** — a Chrome/Edge extension captures the open conversation
-  on ChatGPT, Claude or Gemini and sends it to RelayOS. No copy-paste.
+  on ChatGPT, Claude or Gemini and sends it to Mnemo. No copy-paste.
 - **AI extraction** — each conversation is turned into structured decisions,
   action items and questions (Google Gemini).
 - **Semantic search** — find decisions by meaning, not keywords, via pgvector
@@ -144,7 +144,7 @@ authenticates with a personal API key generated in **Settings → API Key**.
 ## MCP server
 
 The MCP server in [`mcp-server/`](mcp-server/) is a zero-dependency stdio server
-that lets AI clients query your RelayOS decisions. See
+that lets AI clients query your Mnemo decisions. See
 [`mcp-server/CLIENTS.md`](mcp-server/CLIENTS.md) for Claude Code / Cursor /
 Windsurf / VS Code setup.
 
@@ -159,4 +159,4 @@ scaffolded but not yet wired in.
 
 ## License
 
-Proprietary — RelayOS.
+Proprietary — Mnemo.

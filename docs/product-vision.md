@@ -1,10 +1,10 @@
-# RelayOS — Product Vision
+# Mnemo — Product Vision
 
 ## Mission
 
 Never lose an important decision again.
 
-RelayOS is the **Memory Layer for Human and AI Decisions**.
+Mnemo is the **Memory Layer for Human and AI Decisions**.
 
 ---
 
@@ -30,11 +30,11 @@ There is no persistent memory layer between conversation and execution.
 
 ## The Solution
 
-RelayOS sits between your conversations and your execution layer.
+Mnemo sits between your conversations and your execution layer.
 
 It captures conversations, extracts structured intelligence, stores it with full context, and makes it searchable and reusable.
 
-Future AI agents will query RelayOS before making decisions, ensuring consistency with past choices.
+Future AI agents will query Mnemo before making decisions, ensuring consistency with past choices.
 
 ---
 
@@ -114,7 +114,7 @@ Future AI agents will query RelayOS before making decisions, ensuring consistenc
 
 ## Competitive Landscape
 
-| Competitor | Approach | RelayOS Advantage |
+| Competitor | Approach | Mnemo Advantage |
 |------------|----------|-------------------|
 | Notion | Manual note-taking | AI extraction, structured data |
 | Obsidian | Personal knowledge base | Team workspaces, AI-native |

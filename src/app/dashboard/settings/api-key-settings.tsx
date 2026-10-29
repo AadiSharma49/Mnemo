@@ -64,7 +64,7 @@ export function ApiKeySettings() {
           <div>
             <h3 className="text-lg font-semibold">Browser Extension API Key</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              Connect the RelayOS browser extension to capture conversations with one click.
+              Connect the Mnemo browser extension to capture conversations with one click.
             </p>
           </div>
         </div>
@@ -150,9 +150,9 @@ export function ApiKeySettings() {
           Connect the extension
         </p>
         <ol className="space-y-1.5 text-sm text-muted-foreground">
-          <li>1. Click the RelayOS icon in your browser toolbar</li>
+          <li>1. Click the Mnemo icon in your browser toolbar</li>
           <li>
-            2. Set the RelayOS URL and paste your API key, then click{" "}
+            2. Set the Mnemo URL and paste your API key, then click{" "}
             <span className="font-medium text-foreground">Connect</span>
           </li>
           <li>3. Open a chat on Claude / ChatGPT / Gemini and click Capture</li>

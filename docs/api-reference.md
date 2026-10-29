@@ -1,4 +1,4 @@
-# RelayOS — API Reference
+# Mnemo — API Reference
 
 Base URL: `/api`
 

@@ -5,7 +5,7 @@ import { Icons } from "@/lib/icons"
 export const metadata = {
   title: "Browser Extension — One-click AI conversation capture",
   description:
-    "Install the RelayOS browser extension to capture your ChatGPT, Claude and Gemini conversations with one click — RelayOS auto-extracts the decisions, action items and questions.",
+    "Install the Mnemo browser extension to capture your ChatGPT, Claude and Gemini conversations with one click — Mnemo auto-extracts the decisions, action items and questions.",
   alternates: { canonical: "/extension" },
 }
 
@@ -13,12 +13,12 @@ const WHAT_IT_DOES = [
   {
     icon: Icons.messageSquare,
     title: "One-click capture",
-    body: "Open any AI chat, click the RelayOS icon — the whole conversation is saved. No copy-paste.",
+    body: "Open any AI chat, click the Mnemo icon — the whole conversation is saved. No copy-paste.",
   },
   {
     icon: Icons.gitBranch,
     title: "Auto-extraction",
-    body: "RelayOS pulls out the decisions, action items and open questions the moment you capture.",
+    body: "Mnemo pulls out the decisions, action items and open questions the moment you capture.",
   },
   {
     icon: Icons.folderKanban,
@@ -38,11 +38,11 @@ const INSTALL_STEPS = [
   },
   {
     title: "Load unpacked",
-    body: "Click “Load unpacked” and select the unzipped folder. Pin the RelayOS icon to your toolbar.",
+    body: "Click “Load unpacked” and select the unzipped folder. Pin the Mnemo icon to your toolbar.",
   },
   {
     title: "Connect your account",
-    body: "Click the icon, enter your RelayOS URL and your API key from Settings → API Key. You're done.",
+    body: "Click the icon, enter your Mnemo URL and your API key from Settings → API Key. You're done.",
   },
 ]
 
@@ -61,13 +61,13 @@ export default function ExtensionPage() {
             Capture AI chats with <span className="text-primary">one click</span>
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
-            Works on Claude, ChatGPT and Gemini. Click the icon on any conversation and RelayOS
+            Works on Claude, ChatGPT and Gemini. Click the icon on any conversation and Mnemo
             saves it and extracts the decisions inside — no copy-paste.
           </p>
 
           <div className="mt-8 flex flex-col items-center gap-3">
             <a
-              href="/relayos-extension.zip"
+              href="/mnemo-extension.zip"
               download
               className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:bg-primary/90"
             >

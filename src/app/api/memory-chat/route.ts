@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { getOrCreateUser } from "@/lib/api-utils"
 import { fetchWithRetry, isRetryableStatus } from "@/lib/ai/fetch-retry"
 
-const SYSTEM_PROMPT = `You are RelayOS, a decision intelligence assistant. Your role is to answer questions about a workspace using ONLY the provided context.
+const SYSTEM_PROMPT = `You are Mnemo, a decision intelligence assistant. Your role is to answer questions about a workspace using ONLY the provided context.
 
 The context contains structured information from the workspace:
 - Decisions - notable choices made, with rationale

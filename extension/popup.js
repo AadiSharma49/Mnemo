@@ -1,4 +1,4 @@
-// RelayOS popup controller — connect, list workspaces, capture, show result.
+// Mnemo popup controller — connect, list workspaces, capture, show result.
 // Once connected + a default workspace is remembered, capture is one click.
 
 const DEFAULT_BASE = "http://localhost:3000"
@@ -92,7 +92,7 @@ async function init() {
     state.workspaces = data.workspaces || []
     renderCapture()
   } catch (e) {
-    showError(`Couldn't reach RelayOS at ${state.apiBase}. Is it running?`)
+    showError(`Couldn't reach Mnemo at ${state.apiBase}. Is it running?`)
   }
 }
 
@@ -121,7 +121,7 @@ function renderCapture() {
 
   if (state.workspaces.length === 0) {
     const opt = document.createElement("option")
-    opt.textContent = "No workspaces — create one in RelayOS"
+    opt.textContent = "No workspaces — create one in Mnemo"
     opt.disabled = true
     select.appendChild(opt)
     $("captureBtn").disabled = true
@@ -234,7 +234,7 @@ function showSuccess(data, workspaceId) {
   const parts = summarize(c)
   let msg
   if (data.extractionError) {
-    msg = "Conversation saved. AI extraction failed — you can retry it inside RelayOS."
+    msg = "Conversation saved. AI extraction failed — you can retry it inside Mnemo."
   } else if (parts.length === 0) {
     msg = "Captured — no decisions, action items or questions found."
   } else {

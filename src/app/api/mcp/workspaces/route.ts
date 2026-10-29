@@ -3,7 +3,7 @@ import { getUserFromApiKey, corsPreflight, jsonWithCors } from "@/lib/api-auth"
 
 /**
  * GET /api/mcp/workspaces
- * Lists the caller's workspaces (with item counts) for the RelayOS MCP server,
+ * Lists the caller's workspaces (with item counts) for the Mnemo MCP server,
  * so an agent can scope other queries to a specific workspace.
  * Authenticated with a Bearer API key.
  */

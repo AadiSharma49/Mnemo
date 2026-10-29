@@ -1,4 +1,4 @@
-# RelayOS — Roadmap
+# Mnemo — Roadmap
 
 ## Phase 1: Foundation ✅ Complete
 - [x] Authentication (Clerk)

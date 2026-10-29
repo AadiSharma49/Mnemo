@@ -5,7 +5,7 @@ import { Icons } from "@/lib/icons"
 import { AnimatedSection } from "./animated-section"
 
 /**
- * Surfaces the (already built) MCP server: RelayOS plugs into Claude Code,
+ * Surfaces the (already built) MCP server: Mnemo plugs into Claude Code,
  * Cursor and other AI coding tools so your assistant can read your past
  * decisions while you work. This is the strongest angle for technical users.
  */
@@ -27,7 +27,7 @@ export function MCPSection() {
                 Your AI reads your decisions <span className="text-primary">while you code</span>
               </h2>
               <p className="mt-4 text-lg text-muted-foreground">
-                RelayOS runs as an MCP server. Point Claude Code, Cursor or any MCP client at it, and
+                Mnemo runs as an MCP server. Point Claude Code, Cursor or any MCP client at it, and
                 your assistant can search your past decisions, action items and open questions —
                 right inside your editor, mid-task.
               </p>
@@ -65,7 +65,7 @@ export function MCPSection() {
                 </div>
                 <div>
                   <p className="mb-1 flex items-center gap-1.5 font-mono text-xs text-primary">
-                    <Icons.plug className="h-3 w-3" /> relayos · search_decisions
+                    <Icons.plug className="h-3 w-3" /> mnemo · search_decisions
                   </p>
                   <div className="rounded-lg border bg-background/60 px-3 py-2">
                     <p className="font-medium">Handle authentication with Clerk</p>

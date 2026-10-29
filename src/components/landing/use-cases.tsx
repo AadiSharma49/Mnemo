@@ -47,7 +47,7 @@ export function UseCasesSection() {
               Built for teams that make decisions
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              If your team uses AI, RelayOS is for you.
+              If your team uses AI, Mnemo is for you.
             </p>
           </div>
         </AnimatedSection>

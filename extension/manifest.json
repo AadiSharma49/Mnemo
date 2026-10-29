@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "RelayOS — Decision Capture",
+  "name": "Mnemo — Decision Capture",
   "version": "1.0.0",
-  "description": "Capture AI conversations to RelayOS with one click and auto-extract decisions, action items and questions.",
-  "author": "RelayOS",
+  "description": "Capture AI conversations to Mnemo with one click and auto-extract decisions, action items and questions.",
+  "author": "Mnemo",
   "permissions": ["activeTab", "storage", "scripting"],
   "host_permissions": [
     "https://claude.ai/*",
@@ -13,7 +13,7 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Capture to RelayOS",
+    "default_title": "Capture to Mnemo",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",

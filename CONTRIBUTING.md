@@ -1,6 +1,6 @@
-# Contributing to RelayOS
+# Contributing to Mnemo
 
-Thanks for working on RelayOS. This guide explains how the project is laid out,
+Thanks for working on Mnemo. This guide explains how the project is laid out,
 how to get it running, and the conventions we follow so the codebase stays clean
 and predictable for everyone.
 

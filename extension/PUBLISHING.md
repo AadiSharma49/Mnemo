@@ -1,10 +1,10 @@
-# Publishing the RelayOS Extension
+# Publishing the Mnemo Extension
 
 Two ways to get the extension onto other people's browsers.
 
-> ⚠️ **Prerequisite for both:** RelayOS must be reachable at a URL your users can
-> hit. For anyone other than you, that means **RelayOS must be deployed** (e.g.
-> `https://relayos.yourdomain.com`), not `localhost:3000`. Users enter that URL
+> ⚠️ **Prerequisite for both:** Mnemo must be reachable at a URL your users can
+> hit. For anyone other than you, that means **Mnemo must be deployed** (e.g.
+> `https://mnemo.yourdomain.com`), not `localhost:3000`. Users enter that URL
 > in the extension's **Connect** screen.
 
 ---
@@ -18,10 +18,10 @@ No fee, no review. Recipients must enable Developer Mode.
 From the project root, in **PowerShell**:
 
 ```powershell
-Compress-Archive -Path extension\* -DestinationPath relayos-extension.zip -Force
+Compress-Archive -Path extension\* -DestinationPath mnemo-extension.zip -Force
 ```
 
-This produces `relayos-extension.zip`. (You can delete `PUBLISHING.md`,
+This produces `mnemo-extension.zip`. (You can delete `PUBLISHING.md`,
 `README.md`, and `icons/generate-icons.mjs` from the zip if you want a leaner
 package — they aren't needed at runtime.)
 
@@ -31,7 +31,7 @@ package — they aren't needed at runtime.)
 2. Open `chrome://extensions`
 3. Toggle **Developer mode** ON (top-right)
 4. Click **Load unpacked** → select the unzipped folder
-5. Pin the RelayOS icon, click it, enter the RelayOS URL + their API key
+5. Pin the Mnemo icon, click it, enter the Mnemo URL + their API key
 
 ---
 
@@ -47,17 +47,17 @@ The real distribution channel. One-time **$5** registration.
 ### 2. Package the extension
 
 ```powershell
-Compress-Archive -Path extension\* -DestinationPath relayos-extension.zip -Force
+Compress-Archive -Path extension\* -DestinationPath mnemo-extension.zip -Force
 ```
 
 ### 3. Create the listing
 
-Upload `relayos-extension.zip`, then fill in the store listing. You'll need:
+Upload `mnemo-extension.zip`, then fill in the store listing. You'll need:
 
 | Field | What to provide |
 | --- | --- |
-| **Name** | RelayOS — Decision Capture |
-| **Summary** | Capture AI conversations to RelayOS with one click. |
+| **Name** | Mnemo — Decision Capture |
+| **Summary** | Capture AI conversations to Mnemo with one click. |
 | **Description** | See the suggested copy below |
 | **Category** | Productivity |
 | **Icon** | `icons/icon128.png` (already included) |
@@ -69,11 +69,11 @@ Upload `relayos-extension.zip`, then fill in the store listing. You'll need:
 
 - **activeTab / scripting** — to read the conversation on the tab **only when the
   user clicks Capture**.
-- **storage** — to save the user's RelayOS URL and API key locally.
+- **storage** — to save the user's Mnemo URL and API key locally.
 - **host permissions (claude.ai, chatgpt.com, gemini.google.com)** — the AI sites
   the extension can capture from.
 - **Data use** — captured conversation text is sent to the user's own configured
-  RelayOS instance. No browsing tracking, no background collection, no ad use.
+  Mnemo instance. No browsing tracking, no background collection, no ad use.
   (This matches `/privacy`.)
 
 ### 5. Submit for review
@@ -85,10 +85,10 @@ click and you get a public store URL to share.
 
 ## Suggested store description
 
-> **RelayOS turns your AI chats into searchable decisions.**
+> **Mnemo turns your AI chats into searchable decisions.**
 >
 > Stop losing track of what you and your AI assistant decided. With one click,
-> RelayOS captures your Claude, ChatGPT, or Gemini conversation and automatically
+> Mnemo captures your Claude, ChatGPT, or Gemini conversation and automatically
 > extracts the key **decisions**, **action items**, and **open questions** — then
 > makes them searchable by meaning, forever.
 >
@@ -96,16 +96,16 @@ click and you get a public store URL to share.
 > • Auto-extracts decisions, to-dos and questions with AI
 > • Organize captures into workspaces
 > • Search your decision history semantically
-> • Connect to your own RelayOS instance with a personal API key
+> • Connect to your own Mnemo instance with a personal API key
 >
-> Requires a RelayOS account. The extension only reads a page when you click
+> Requires a Mnemo account. The extension only reads a page when you click
 > Capture — it never runs in the background or tracks your browsing.
 
 ---
 
 ## Before you publish — checklist
 
-- [ ] RelayOS is deployed to a public URL
+- [ ] Mnemo is deployed to a public URL
 - [ ] `/privacy` loads on that deployed URL
 - [ ] `version` in `manifest.json` is bumped for each new upload
 - [ ] Tested the full connect → capture → view flow against the deployed URL

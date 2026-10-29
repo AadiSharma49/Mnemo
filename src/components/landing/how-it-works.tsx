@@ -30,7 +30,7 @@ const STEPS: Step[] = [
   {
     icon: Icons.gitBranch,
     title: "AI pulls out what matters",
-    how: "RelayOS reads the conversation and extracts the decisions, action items, and open questions inside it.",
+    how: "Mnemo reads the conversation and extracts the decisions, action items, and open questions inside it.",
     why: "You keep the actual choices you made — not a wall of text you'll never scroll back through.",
     accent: "text-violet-500 bg-violet-500/10",
   },

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * RelayOS MCP Server
+ * Mnemo MCP Server
  * ------------------
- * Exposes your RelayOS decision memory to any MCP client (Claude Desktop,
+ * Exposes your Mnemo decision memory to any MCP client (Claude Desktop,
  * Cursor, Windsurf, …) so your AI assistant can search and read the decisions,
  * action items and open questions you've captured — live, while you work.
  *
@@ -11,8 +11,8 @@
  * Requires Node 18+.
  *
  * Configuration (environment variables):
- *   RELAYOS_API_KEY   required — a personal key from RelayOS → Settings → API Key
- *   RELAYOS_URL       optional — base URL of your RelayOS instance
+ *   MNEMO_API_KEY   required — a personal key from Mnemo → Settings → API Key
+ *   MNEMO_URL       optional — base URL of your Mnemo instance
  *                     (default: http://localhost:3000)
  *
  * IMPORTANT: never write anything to stdout except protocol messages.
@@ -22,21 +22,21 @@
 import { createInterface } from "node:readline"
 
 const PROTOCOL_VERSION = "2024-11-05"
-const SERVER_INFO = { name: "relayos", version: "0.1.0" }
+const SERVER_INFO = { name: "mnemo", version: "0.1.0" }
 
-const BASE_URL = (process.env.RELAYOS_URL || "http://localhost:3000").replace(/\/+$/, "")
-const API_KEY = process.env.RELAYOS_API_KEY || ""
+const BASE_URL = (process.env.MNEMO_URL || process.env.RELAYOS_URL || "http://localhost:3000").replace(/\/+$/, "")
+const API_KEY = process.env.MNEMO_API_KEY || process.env.RELAYOS_API_KEY || ""
 
 function log(...args) {
   // stderr only — stdout is reserved for the JSON-RPC stream.
-  process.stderr.write("[relayos-mcp] " + args.join(" ") + "\n")
+  process.stderr.write("[mnemo-mcp] " + args.join(" ") + "\n")
 }
 
-/* ── RelayOS HTTP client ───────────────────────────────────────────────── */
+/* ── Mnemo HTTP client ───────────────────────────────────────────────── */
 
 async function relay(path, { method = "GET", query, body } = {}) {
   if (!API_KEY) {
-    throw new Error("RELAYOS_API_KEY is not set. Add it to your MCP client config.")
+    throw new Error("MNEMO_API_KEY is not set. Add it to your MCP client config.")
   }
   const url = new URL(BASE_URL + path)
   if (query) {
@@ -62,10 +62,10 @@ async function relay(path, { method = "GET", query, body } = {}) {
   }
 
   if (!res.ok) {
-    const msg = data?.error || `RelayOS request failed (${res.status})`
+    const msg = data?.error || `Mnemo request failed (${res.status})`
     if (res.status === 401) {
       throw new Error(
-        `${msg}. Check RELAYOS_API_KEY — generate one in RelayOS → Settings → API Key.`
+        `${msg}. Check MNEMO_API_KEY — generate one in Mnemo → Settings → API Key.`
       )
     }
     throw new Error(msg)
@@ -183,7 +183,7 @@ const TOOLS = [
   {
     name: "list_workspaces",
     description:
-      "List the user's RelayOS workspaces with item counts, so you can scope other tools to a specific workspace by id.",
+      "List the user's Mnemo workspaces with item counts, so you can scope other tools to a specific workspace by id.",
     inputSchema: { type: "object", properties: {} },
     handler: async () => {
       const data = await relay("/api/mcp/workspaces")
@@ -296,4 +296,4 @@ rl.on("line", (line) => {
 
 rl.on("close", () => process.exit(0))
 
-log(`ready — talking to ${BASE_URL}${API_KEY ? "" : " (WARNING: RELAYOS_API_KEY not set)"}`)
+log(`ready — talking to ${BASE_URL}${API_KEY ? "" : " (WARNING: MNEMO_API_KEY not set)"}`)

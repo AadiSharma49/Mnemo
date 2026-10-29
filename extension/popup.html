@@ -4,14 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles.css" />
-    <title>RelayOS</title>
+    <title>Mnemo</title>
   </head>
   <body>
     <div class="app">
       <header class="header">
         <div class="brand">
           <div class="logo">R</div>
-          <span class="brand-name">RelayOS</span>
+          <span class="brand-name">Mnemo</span>
         </div>
         <span id="statusDot" class="status-dot" title="Not connected"></span>
       </header>
@@ -25,13 +25,13 @@
       <!-- Connect (no API key stored) -->
       <section id="screen-connect" class="screen hidden">
         <h2 class="title">Connect your account</h2>
-        <p class="muted">Paste your RelayOS API key to capture conversations.</p>
+        <p class="muted">Paste your Mnemo API key to capture conversations.</p>
 
-        <label class="label" for="apiBase">RelayOS URL</label>
+        <label class="label" for="apiBase">Mnemo URL</label>
         <input id="apiBase" class="input" type="text" placeholder="http://localhost:3000" />
 
         <label class="label" for="apiKey">API key</label>
-        <input id="apiKey" class="input" type="password" placeholder="relay_sk_…" />
+        <input id="apiKey" class="input" type="password" placeholder="mnemo_sk_…" />
 
         <button id="getKeyBtn" class="link-btn">Get my API key →</button>
         <p id="connectError" class="error hidden"></p>
@@ -81,7 +81,7 @@
         <div class="icon-circle success">✓</div>
         <h2 class="title">Captured!</h2>
         <p id="successText" class="muted"></p>
-        <button id="viewBtn" class="btn btn-primary">View in RelayOS</button>
+        <button id="viewBtn" class="btn btn-primary">View in Mnemo</button>
         <button id="againBtn" class="link-btn">Capture another</button>
       </section>
 

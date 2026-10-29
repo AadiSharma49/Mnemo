@@ -1,10 +1,10 @@
-// RelayOS content script — reads the conversation from the AI tool's DOM.
+// Mnemo content script — reads the conversation from the AI tool's DOM.
 // Injected on claude.ai, chatgpt.com/chat.openai.com and gemini.google.com.
 // Also re-injectable on demand by the popup (guarded against double-init).
 
 (() => {
-  if (window.__relayosInjected) return
-  window.__relayosInjected = true
+  if (window.__mnemoInjected) return
+  window.__mnemoInjected = true
 
   function detectSource() {
     const h = location.hostname
