@@ -1,4 +1,4 @@
-# RelayOS — Database Reference
+# Mnemo — Database Reference
 
 ## PostgreSQL Schema (Prisma)
 

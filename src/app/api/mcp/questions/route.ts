@@ -3,7 +3,7 @@ import { getUserFromApiKey, corsPreflight, jsonWithCors } from "@/lib/api-auth"
 
 /**
  * GET /api/mcp/questions
- * Lists the caller's open questions for the RelayOS MCP server, newest first.
+ * Lists the caller's open questions for the Mnemo MCP server, newest first.
  * Authenticated with a Bearer API key. Defaults to open questions; pass
  * status=all to include resolved ones.
  *

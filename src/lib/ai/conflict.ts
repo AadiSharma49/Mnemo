@@ -1,11 +1,11 @@
-import { fetchWithRetry, isRetryableStatus } from "./fetch-retry"
+import { complete, type LlmConfig } from "./llm"
 
 /**
  * Conflict judge.
  *
  * pgvector cheaply narrows the field to decision pairs that are about the same
  * thing (high cosine similarity). But similarity ≠ contradiction — two similar
- * decisions can perfectly agree. So we hand the shortlisted pairs to Gemini and
+ * decisions can perfectly agree. So we hand the shortlisted pairs to the user's model and
  * ask it which ones genuinely CONTRADICT each other, with a reason + severity.
  */
 
@@ -24,8 +24,6 @@ export interface ConflictJudgement {
   reason: string
   severity: Severity
 }
-
-const MODEL = process.env.AI_MODEL || "gemini-2.5-flash"
 
 const PROMPT = `You compare pairs of decisions a person or team made and decide whether the two decisions CONTRADICT each other.
 
@@ -48,7 +46,7 @@ function normalizeSeverity(s: unknown): Severity {
 }
 
 function parseJudgements(raw: string): ConflictJudgement[] {
-  let s = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim()
+  const s = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim()
 
   const attempt = (text: string): unknown => {
     try {
@@ -81,43 +79,18 @@ function parseJudgements(raw: string): ConflictJudgement[] {
     .filter((x): x is ConflictJudgement => x !== null)
 }
 
-export async function judgeConflicts(pairs: ConflictPairInput[]): Promise<ConflictJudgement[]> {
+export async function judgeConflicts(pairs: ConflictPairInput[], cfg: LlmConfig): Promise<ConflictJudgement[]> {
   if (pairs.length === 0) return []
 
-  const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) throw new Error("GEMINI_API_KEY is not configured.")
-
   const list = pairs
-    .map(
-      (p, i) =>
-        `Pair ${i}:\n  A. ${p.aTitle} — ${p.aSummary}\n  B. ${p.bTitle} — ${p.bSummary}`
-    )
+    .map((p, i) => `Pair ${i}:\n  A. ${p.aTitle} — ${p.aSummary}\n  B. ${p.bTitle} — ${p.bSummary}`)
     .join("\n\n")
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`
-  const res = await fetchWithRetry(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: PROMPT + "\n\n" + list }] }],
-      generationConfig: {
-        temperature: 0,
-        maxOutputTokens: 4096,
-        responseMimeType: "application/json",
-      },
-    }),
+  const raw = await complete(cfg, {
+    prompt: PROMPT + "\n\n" + list,
+    temperature: 0,
+    maxTokens: 4096,
+    json: true,
   })
-
-  if (!res.ok) {
-    if (isRetryableStatus(res.status)) {
-      throw new Error("The AI model is busy right now. Please try again in a moment.")
-    }
-    const t = await res.text().catch(() => "")
-    throw new Error(`Gemini API error (${res.status}): ${t.slice(0, 200)}`)
-  }
-
-  const data = await res.json()
-  const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text
-  if (!raw) return []
   return parseJudgements(raw)
 }

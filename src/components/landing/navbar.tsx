@@ -50,7 +50,7 @@ export function Navbar() {
             className="rounded-lg shadow-md transition-transform duration-300 group-hover:scale-110"
           />
           <span className="font-heading hidden text-sm font-semibold tracking-tight sm:inline">
-            Relay<span className="text-primary">OS</span>
+            Mnemo
           </span>
         </Link>
 

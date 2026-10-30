@@ -1,6 +1,6 @@
-# Connect RelayOS to your AI tools (MCP)
+# Connect Mnemo to your AI tools (MCP)
 
-The RelayOS MCP server works with **any MCP client**. Below are copy-paste
+The Mnemo MCP server works with **any MCP client**. Below are copy-paste
 configs for the popular ones — Claude Desktop, Cursor, VSCode (Cline / Continue /
 GitHub Copilot), Windsurf, and Zed.
 
@@ -14,15 +14,15 @@ with two environment variables:
 
 | Env var | Value |
 | --- | --- |
-| `RELAYOS_API_KEY` | Your key from RelayOS → **Settings → API Key** |
-| `RELAYOS_URL` | `http://localhost:3000` locally, or your deployed URL for use anywhere |
+| `MNEMO_API_KEY` | Your key from Mnemo → **Settings → API Key** |
+| `MNEMO_URL` | `http://localhost:3000` locally, or your deployed URL for use anywhere |
 
-> 💡 **To use RelayOS across machines / "everywhere"**, set `RELAYOS_URL` to your
-> **deployed** RelayOS URL (e.g. `https://relayos.yourdomain.com`). With
-> `localhost` it only works on the machine running RelayOS.
+> 💡 **To use Mnemo across machines / "everywhere"**, set `MNEMO_URL` to your
+> **deployed** Mnemo URL (e.g. `https://mnemo.yourdomain.com`). With
+> `localhost` it only works on the machine running Mnemo.
 
-Replace `D:\\RelayOS\\mcp-server\\index.mjs` below with your real absolute path
-(use **double backslashes** on Windows).
+Replace `/absolute/path/to/Mnemo/mcp-server/index.mjs` below with your real absolute path
+(on Windows, forward slashes like `D:/RelayOS/mcp-server/index.mjs` work, or use double backslashes).
 
 ---
 
@@ -35,12 +35,12 @@ Config file:
 ```json
 {
   "mcpServers": {
-    "relayos": {
+    "mnemo": {
       "command": "node",
-      "args": ["D:\\RelayOS\\mcp-server\\index.mjs"],
+      "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
       "env": {
-        "RELAYOS_API_KEY": "relay_sk_your_key",
-        "RELAYOS_URL": "http://localhost:3000"
+        "MNEMO_API_KEY": "mnemo_sk_your_key",
+        "MNEMO_URL": "http://localhost:3000"
       }
     }
   }
@@ -59,19 +59,19 @@ or **Settings → MCP → Add new server**.
 ```json
 {
   "mcpServers": {
-    "relayos": {
+    "mnemo": {
       "command": "node",
-      "args": ["D:\\RelayOS\\mcp-server\\index.mjs"],
+      "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
       "env": {
-        "RELAYOS_API_KEY": "relay_sk_your_key",
-        "RELAYOS_URL": "http://localhost:3000"
+        "MNEMO_API_KEY": "mnemo_sk_your_key",
+        "MNEMO_URL": "http://localhost:3000"
       }
     }
   }
 }
 ```
 
-Now in Cursor's chat (Agent mode), ask it to search your RelayOS decisions.
+Now in Cursor's chat (Agent mode), ask it to search your Mnemo decisions.
 
 ---
 
@@ -86,20 +86,20 @@ Create `.vscode/mcp.json` in your project:
 ```json
 {
   "servers": {
-    "relayos": {
+    "mnemo": {
       "type": "stdio",
       "command": "node",
-      "args": ["D:\\RelayOS\\mcp-server\\index.mjs"],
+      "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
       "env": {
-        "RELAYOS_API_KEY": "relay_sk_your_key",
-        "RELAYOS_URL": "http://localhost:3000"
+        "MNEMO_API_KEY": "mnemo_sk_your_key",
+        "MNEMO_URL": "http://localhost:3000"
       }
     }
   }
 }
 ```
 
-Open Copilot Chat → switch to **Agent** mode → the `relayos` tools appear. Ask:
+Open Copilot Chat → switch to **Agent** mode → the `mnemo` tools appear. Ask:
 *"What did we decide about the auth flow?"* while you code.
 
 ### Option 2 — Cline (VSCode extension)
@@ -110,12 +110,12 @@ Cline → **MCP Servers** → **Configure MCP Servers** (opens
 ```json
 {
   "mcpServers": {
-    "relayos": {
+    "mnemo": {
       "command": "node",
-      "args": ["D:\\RelayOS\\mcp-server\\index.mjs"],
+      "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
       "env": {
-        "RELAYOS_API_KEY": "relay_sk_your_key",
-        "RELAYOS_URL": "http://localhost:3000"
+        "MNEMO_API_KEY": "mnemo_sk_your_key",
+        "MNEMO_URL": "http://localhost:3000"
       }
     }
   }
@@ -128,13 +128,13 @@ In `~/.continue/config.yaml`:
 
 ```yaml
 mcpServers:
-  - name: relayos
+  - name: mnemo
     command: node
     args:
-      - D:\\RelayOS\\mcp-server\\index.mjs
+      - /absolute/path/to/Mnemo/mcp-server/index.mjs
     env:
-      RELAYOS_API_KEY: relay_sk_your_key
-      RELAYOS_URL: http://localhost:3000
+      MNEMO_API_KEY: mnemo_sk_your_key
+      MNEMO_URL: http://localhost:3000
 ```
 
 ---
@@ -147,12 +147,12 @@ mcpServers:
 ```json
 {
   "mcpServers": {
-    "relayos": {
+    "mnemo": {
       "command": "node",
-      "args": ["D:\\RelayOS\\mcp-server\\index.mjs"],
+      "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
       "env": {
-        "RELAYOS_API_KEY": "relay_sk_your_key",
-        "RELAYOS_URL": "http://localhost:3000"
+        "MNEMO_API_KEY": "mnemo_sk_your_key",
+        "MNEMO_URL": "http://localhost:3000"
       }
     }
   }
@@ -168,13 +168,13 @@ In `settings.json` under `context_servers`:
 ```json
 {
   "context_servers": {
-    "relayos": {
+    "mnemo": {
       "command": {
         "path": "node",
-        "args": ["D:\\RelayOS\\mcp-server\\index.mjs"],
+        "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
         "env": {
-          "RELAYOS_API_KEY": "relay_sk_your_key",
-          "RELAYOS_URL": "http://localhost:3000"
+          "MNEMO_API_KEY": "mnemo_sk_your_key",
+          "MNEMO_URL": "http://localhost:3000"
         }
       }
     }
@@ -189,7 +189,7 @@ In `settings.json` under `context_servers`:
 Standalone smoke test from the project root, in PowerShell:
 
 ```powershell
-$env:RELAYOS_API_KEY = "relay_sk_your_key"
+$env:MNEMO_API_KEY = "mnemo_sk_your_key"
 '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | node mcp-server/index.mjs
 ```
 

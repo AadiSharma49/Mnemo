@@ -1,7 +1,8 @@
-// RelayOS popup controller — connect, list workspaces, capture, show result.
+// Mnemo popup controller — connect, list workspaces, capture, show result.
 // Once connected + a default workspace is remembered, capture is one click.
 
-const DEFAULT_BASE = "http://localhost:3000"
+// The hosted Mnemo. People only change this when they self-host (Advanced on the connect screen).
+const DEFAULT_BASE = "https://mnemo.app"
 const SUPPORTED = [
   /^https:\/\/claude\.ai\//,
   /^https:\/\/(chat\.openai\.com|chatgpt\.com)\//,
@@ -30,6 +31,28 @@ function setConnected(on) {
   dot.title = on ? "Connected" : "Not connected"
 }
 const trimBase = (b) => (b || DEFAULT_BASE).trim().replace(/\/+$/, "")
+
+// Show the server URL only when it isn't the default; keep it tucked away otherwise.
+function fillBase() {
+  const custom = state.apiBase !== DEFAULT_BASE
+  $("apiBase").value = custom ? state.apiBase : ""
+  $("advanced").open = custom
+}
+
+// https everywhere except a local dev server.
+function baseProblem(base) {
+  let u
+  try {
+    u = new URL(base)
+  } catch {
+    return "That server URL isn't valid."
+  }
+  const local = u.hostname === "localhost" || u.hostname === "127.0.0.1"
+  if (u.protocol !== "https:" && !(local && u.protocol === "http:")) {
+    return "Use an https:// server URL."
+  }
+  return null
+}
 
 async function storageGet() {
   return chrome.storage.local.get([
@@ -71,7 +94,7 @@ async function init() {
 
   // Connection is remembered — we only show "connect" when there's no key.
   if (!state.apiKey) {
-    $("apiBase").value = state.apiBase
+    fillBase()
     setConnected(false)
     return show("connect")
   }
@@ -92,7 +115,7 @@ async function init() {
     state.workspaces = data.workspaces || []
     renderCapture()
   } catch (e) {
-    showError(`Couldn't reach RelayOS at ${state.apiBase}. Is it running?`)
+    showError(`Couldn't reach Mnemo (${new URL(state.apiBase).host}). Check your connection and try again.`)
   }
 }
 
@@ -121,7 +144,7 @@ function renderCapture() {
 
   if (state.workspaces.length === 0) {
     const opt = document.createElement("option")
-    opt.textContent = "No workspaces — create one in RelayOS"
+    opt.textContent = "No workspaces — create one in Mnemo"
     opt.disabled = true
     select.appendChild(opt)
     $("captureBtn").disabled = true
@@ -234,7 +257,7 @@ function showSuccess(data, workspaceId) {
   const parts = summarize(c)
   let msg
   if (data.extractionError) {
-    msg = "Conversation saved. AI extraction failed — you can retry it inside RelayOS."
+    msg = "Conversation saved. AI extraction failed — you can retry it inside Mnemo."
   } else if (parts.length === 0) {
     msg = "Captured — no decisions, action items or questions found."
   } else {
@@ -254,7 +277,7 @@ function showConnectError(text) {
   const el = $("connectError")
   el.textContent = text
   el.classList.remove("hidden")
-  $("apiBase").value = state.apiBase
+  fillBase()
   setConnected(false)
   show("connect")
 }
@@ -269,6 +292,13 @@ $("saveBtn").addEventListener("click", async () => {
     err.classList.remove("hidden")
     return
   }
+  const problem = baseProblem(base)
+  if (problem) {
+    $("advanced").open = true
+    err.textContent = problem
+    err.classList.remove("hidden")
+    return
+  }
   await chrome.storage.local.set({ relayApiKey: key, relayApiBase: base })
   err.classList.add("hidden")
   init()
@@ -276,7 +306,7 @@ $("saveBtn").addEventListener("click", async () => {
 
 $("getKeyBtn").addEventListener("click", () => {
   const base = trimBase($("apiBase").value)
-  chrome.tabs.create({ url: `${base}/api/user/api-key` })
+  chrome.tabs.create({ url: `${base}/dashboard/settings` })
 })
 
 // "Change" — reveal the picker for a one-off different workspace.

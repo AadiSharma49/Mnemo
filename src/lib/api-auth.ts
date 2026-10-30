@@ -10,7 +10,7 @@ import { prisma } from "@/lib/prisma"
  * exactly once, at generation time.
  */
 
-const API_KEY_PREFIX = "relay_sk_"
+const API_KEY_PREFIX = "mnemo_sk_"
 
 export function generateApiKey(): { key: string; hash: string } {
   const key = API_KEY_PREFIX + randomBytes(24).toString("hex")

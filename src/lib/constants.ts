@@ -1,7 +1,7 @@
-export const APP_NAME = "RelayOS"
+export const APP_NAME = "Mnemo"
 export const APP_TAGLINE = "Capture decisions from AI conversations"
 export const APP_DESCRIPTION =
-  "RelayOS extracts decisions, action items, and questions from your AI chats and makes them searchable."
+  "Mnemo extracts decisions, action items, and questions from your AI chats and makes them searchable."
 
 export const NAV_LINKS = [
   { href: "#features", label: "Features" },

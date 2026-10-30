@@ -3,11 +3,11 @@ import { ImageResponse } from "next/og"
 /**
  * Dynamically generated Open Graph / social share image (1200×630).
  * Next.js auto-wires this as og:image (and Twitter falls back to it), so every
- * shared RelayOS link gets a branded preview card.
+ * shared Mnemo link gets a branded preview card.
  */
 
 export const runtime = "edge"
-export const alt = "RelayOS — Give Your AI a Memory"
+export const alt = "Mnemo — Give Your AI a Memory"
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 
@@ -42,9 +42,9 @@ export default function OpengraphImage() {
               fontWeight: 700,
             }}
           >
-            R
+            M
           </div>
-          <div style={{ color: "white", fontSize: "36px", fontWeight: 700 }}>RelayOS</div>
+          <div style={{ color: "white", fontSize: "36px", fontWeight: 700 }}>Mnemo</div>
         </div>
 
         {/* headline */}
@@ -69,7 +69,7 @@ export default function OpengraphImage() {
               color: "#e9e4d6",
             }}
           >
-            RelayOS gives it memory.
+            Mnemo gives it memory.
           </div>
         </div>
 

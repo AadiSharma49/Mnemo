@@ -1,10 +1,10 @@
-// RelayOS content script — reads the conversation from the AI tool's DOM.
+// Mnemo content script — reads the conversation from the AI tool's DOM.
 // Injected on claude.ai, chatgpt.com/chat.openai.com and gemini.google.com.
 // Also re-injectable on demand by the popup (guarded against double-init).
 
 (() => {
-  if (window.__relayosInjected) return
-  window.__relayosInjected = true
+  if (window.__mnemoInjected) return
+  window.__mnemoInjected = true
 
   function detectSource() {
     const h = location.hostname
@@ -46,12 +46,19 @@
   }
 
   // ── Gemini ──
+  function geminiTurnSelector() {
+    return document.querySelector("model-response")
+      ? "user-query, model-response"
+      : "user-query, response-container"
+  }
+
   function extractGemini() {
     const parts = []
-    const nodes = document.querySelectorAll("user-query, model-response")
+    // Shared chats (/share/…) render replies as <response-container>, not <model-response>.
+    const nodes = document.querySelectorAll(geminiTurnSelector())
     nodes.forEach((n) => {
       const isUser = n.tagName.toLowerCase() === "user-query"
-      const text = clean(n.innerText)
+      const text = clean(n.innerText) || (isUser ? "[image or file attachment]" : "")
       if (text) parts.push(`${isUser ? "Human" : "Assistant"}: ${text}`)
     })
     return parts.join("\n\n")
@@ -107,7 +114,7 @@
     if (source === "claude")
       sel = '[data-testid="user-message"], [data-testid="assistant-message"], .font-claude-message'
     else if (source === "chatgpt") sel = "[data-message-author-role]"
-    else if (source === "gemini") sel = "user-query, model-response"
+    else if (source === "gemini") sel = geminiTurnSelector()
     if (!sel) return 0
     try {
       return document.querySelectorAll(sel).length

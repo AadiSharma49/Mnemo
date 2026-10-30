@@ -7,6 +7,54 @@ import { cn } from "@/lib/utils"
 
 type Status = "loading" | "no-key" | "has-key" | "error"
 
+/** Copy-ready MCP config for Claude Desktop / Cursor. */
+function McpSnippet({ apiKey }: { apiKey: string }) {
+  const [copied, setCopied] = React.useState(false)
+  const config = JSON.stringify(
+    {
+      mcpServers: {
+        mnemo: {
+          command: "node",
+          args: ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
+          env: { MNEMO_API_KEY: apiKey, MNEMO_URL: typeof window !== "undefined" ? window.location.origin : "" },
+        },
+      },
+    },
+    null,
+    2
+  )
+
+  return (
+    <div className="mt-6 rounded-lg border bg-muted/30 p-4">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Use with Claude Desktop or Cursor (MCP)
+        </p>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            navigator.clipboard.writeText(config).then(() => {
+              setCopied(true)
+              setTimeout(() => setCopied(false), 2000)
+            })
+          }
+        >
+          {copied ? <Icons.check className="mr-1.5 h-3.5 w-3.5" /> : <Icons.copy className="mr-1.5 h-3.5 w-3.5" />}
+          {copied ? "Copied" : "Copy config"}
+        </Button>
+      </div>
+      <pre className="mt-3 max-h-56 overflow-auto rounded-md border bg-background p-3 text-xs">{config}</pre>
+      <ol className="mt-3 space-y-1 text-sm text-muted-foreground">
+        <li>1. Replace the path with where this repo&apos;s <code>mcp-server/index.mjs</code> lives on your machine.</li>
+        <li>2. Paste into <code>claude_desktop_config.json</code> (or Cursor → Settings → MCP), then restart the app.</li>
+        <li>3. Ask: <em>&quot;Search my Mnemo decisions for …&quot;</em></li>
+      </ol>
+    </div>
+  )
+}
+
 export function ApiKeySettings() {
   const [status, setStatus] = React.useState<Status>("loading")
   const [newKey, setNewKey] = React.useState<string | null>(null)
@@ -62,9 +110,9 @@ export function ApiKeySettings() {
             <Icons.plug className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold">Browser Extension API Key</h3>
+            <h3 className="text-lg font-semibold">API Key — Extension &amp; MCP</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              Connect the RelayOS browser extension to capture conversations with one click.
+              One key connects the browser extension (capture) and MCP clients like Claude Desktop and Cursor (search your decisions).
             </p>
           </div>
         </div>
@@ -110,6 +158,7 @@ export function ApiKeySettings() {
                 {copied ? <Icons.check className="h-4 w-4" /> : <Icons.copy className="h-4 w-4" />}
               </Button>
             </div>
+            <McpSnippet apiKey={newKey} />
           </div>
         )}
 
@@ -150,9 +199,9 @@ export function ApiKeySettings() {
           Connect the extension
         </p>
         <ol className="space-y-1.5 text-sm text-muted-foreground">
-          <li>1. Click the RelayOS icon in your browser toolbar</li>
+          <li>1. Click the Mnemo icon in your browser toolbar</li>
           <li>
-            2. Set the RelayOS URL and paste your API key, then click{" "}
+            2. Set the Mnemo URL and paste your API key, then click{" "}
             <span className="font-medium text-foreground">Connect</span>
           </li>
           <li>3. Open a chat on Claude / ChatGPT / Gemini and click Capture</li>

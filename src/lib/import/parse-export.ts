@@ -1,5 +1,5 @@
 /**
- * Parses AI chat export files into RelayOS conversations.
+ * Parses AI chat export files into Mnemo conversations.
  *
  * Supports:
  *  - ChatGPT: Settings → Data controls → Export → `conversations.json`

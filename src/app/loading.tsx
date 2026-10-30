@@ -3,7 +3,7 @@ import { RelayLoader } from "@/components/loading/relay-loader"
 export default function RootLoading() {
   return (
     <RelayLoader
-      title="RelayOS"
+      title="Mnemo"
       subtitle="Loading your decision intelligence platform"
       messages={[
         "Preparing your workspace...",

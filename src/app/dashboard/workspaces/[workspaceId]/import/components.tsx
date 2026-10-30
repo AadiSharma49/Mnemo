@@ -126,7 +126,7 @@ export function ImportFromUrlForm({ workspaceId }: { workspaceId: string }) {
           <div>
             <p className="font-semibold">Import from a share link</p>
             <p className="mt-0.5 text-sm text-muted-foreground">
-              Paste a public share link (ChatGPT works today; Perplexity, Claude, Gemini and others are best-effort).
+              Paste a public share link (ChatGPT and Gemini work; Perplexity and others are best-effort).
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">

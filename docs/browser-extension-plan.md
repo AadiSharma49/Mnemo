@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The RelayOS Browser Extension captures conversations from AI assistants and messaging platforms, then syncs them to RelayOS for extraction and memory storage.
+The Mnemo Browser Extension captures conversations from AI assistants and messaging platforms, then syncs them to Mnemo for extraction and memory storage.
 
 ---
 
@@ -18,14 +18,14 @@ The RelayOS Browser Extension captures conversations from AI assistants and mess
 
 ## Authentication
 
-1. User logs into RelayOS web app with Clerk
-2. RelayOS issues JWT session cookie
+1. User logs into Mnemo web app with Clerk
+2. Mnemo issues JWT session cookie
 3. Extension stores no credentials
-4. Extension calls RelayOS APIs with session cookie from browser context
+4. Extension calls Mnemo APIs with session cookie from browser context
 
 ```ts
-// Extension calls RelayOS with existing cookies
-fetch("https://relayos.com/api/conversations", {
+// Extension calls Mnemo with existing cookies
+fetch("https://mnemo.com/api/conversations", {
   method: "POST",
   credentials: "include",
   body: JSON.stringify({ content, source: "chatgpt" }),
@@ -40,7 +40,7 @@ fetch("https://relayos.com/api/conversations", {
 - Observe DOM mutations on new messages
 - Extract user + assistant message pairs
 - Debounce capture to avoid duplicate API calls
-- Add floating “Save to RelayOS” button
+- Add floating “Save to Mnemo” button
 
 ### Claude
 - Similar DOM observation
@@ -59,11 +59,11 @@ fetch("https://relayos.com/api/conversations", {
 ```
 Conversation detected
     ↓
-User clicks "Save to RelayOS" OR auto-sync
+User clicks "Save to Mnemo" OR auto-sync
     ↓
 POST /api/conversations { content, source, metadata }
     ↓
-RelayOS creates Conversation record
+Mnemo creates Conversation record
     ↓
 User can trigger extraction from web UI
     ↓
@@ -95,7 +95,7 @@ AI extracts decisions/actionItems/questions
 ## VS Code Extension
 
 - Reuses same `/api/conversations` and `/api/extract` endpoints
-- Adds inline command: “RelayOS: Capture this conversation”
+- Adds inline command: “Mnemo: Capture this conversation”
 - Captures from VS Code chat, Copilot, or terminal context
 
 ---
@@ -103,7 +103,7 @@ AI extracts decisions/actionItems/questions
 ## Security
 
 - No API keys in extension
-- Extension only talks to RelayOS origin
+- Extension only talks to Mnemo origin
 - All auth via Clerk session cookies
 - CSRF protection on all API endpoints
 

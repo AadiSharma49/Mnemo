@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getCurrentUserId } from "@/lib/api-utils"
-import { getProvider } from "@/lib/ai/providers/registry"
-import type { ExtractionResult } from "@/lib/ai/providers/provider"
+import { extractWithConfig, type ExtractionResult } from "@/lib/ai/extraction"
+import { getLlmConfigForUser } from "@/lib/ai/user-llm"
+import { LlmError } from "@/lib/ai/llm"
+import { stripImageLinks } from "@/lib/import/image-markdown"
 
 export async function POST(request: Request) {
   try {
@@ -29,14 +31,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Conversation not found" }, { status: 404 })
     }
 
-    // Run extraction via provider registry
+    // Run extraction on the user's own model (Settings → AI Model), else the server default
     let result: ExtractionResult
     try {
-      const provider = getProvider()
-      result = await provider.extractConversation(conversation.content)
+      const cfg = await getLlmConfigForUser(userId)
+      result = await extractWithConfig(cfg, stripImageLinks(conversation.content))
     } catch (err) {
       const message = err instanceof Error ? err.message : "Extraction failed"
       console.error("[extract] Error:", message)
+      // Config/auth/busy errors are written for the user — show them; hide anything else.
+      if (err instanceof LlmError && err.kind !== "bad-response") {
+        return NextResponse.json({ error: err.message, code: "EXTRACTION_FAILED" }, { status: err.kind === "busy" ? 503 : 400 })
+      }
       return NextResponse.json(
         { error: "AI extraction failed. Please try again later.", code: "EXTRACTION_FAILED" },
         { status: 500 }

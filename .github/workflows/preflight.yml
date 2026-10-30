@@ -1,0 +1,38 @@
+name: Dependency preflight
+
+# When a PR changes dependency versions, run `preflight` (@aadi49/preflight) for every
+# bumped package. It scans this repo's own code against the package's changelog and
+# fails the check only when it finds usages that WILL break.
+
+on:
+  pull_request:
+    paths:
+      - package.json
+      - package-lock.json
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run preflight on changed dependencies
+        id: preflight
+        run: node scripts/ci/preflight-changed.mjs "origin/${{ github.base_ref }}"
+      - name: Comment on PR
+        # Only when the report exists (it isn't written if an earlier step failed) and the PR isn't from a fork.
+        if: always() && hashFiles('preflight-report.md') != '' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: preflight
+          path: preflight-report.md

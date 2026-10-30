@@ -28,6 +28,19 @@ model User {
   questions     Question[]
   workspaces    Workspace[]
   chatMessages  ChatMessage[]
+  aiSettings    UserAiSettings?
+}
+
+// Bring-your-own-model settings. The API key is stored encrypted (AES-256-GCM); null = use the server default.
+model UserAiSettings {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  provider     String
+  model        String
+  baseUrl      String?
+  encryptedKey String?
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Workspace {
@@ -59,6 +72,21 @@ model Conversation {
   workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   decisions   Decision[]
   questions   Question[]
+  images      ConversationImage[]
+}
+
+// Images captured with a conversation (e.g. screenshots in a shared Gemini chat).
+// Stored in the database so they stay private and don't break when the source link expires.
+model ConversationImage {
+  id             String       @id @default(cuid())
+  mimeType       String
+  data           Bytes
+  conversationId String
+  userId         String
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
 }
 
 model Decision {

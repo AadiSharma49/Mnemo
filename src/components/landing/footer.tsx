@@ -31,8 +31,8 @@ export function Footer() {
       {/* Settle-in headline — reads clean, lifts on hover */}
       <div className="mx-auto max-w-3xl px-4 pt-20 pb-4 sm:px-6 lg:px-8">
         <SettleText
-          text="RelayOS captures decisions, action items, and questions from your AI conversations — and makes them searchable forever."
-          highlightWords={["RelayOS", "decisions", "action", "questions", "searchable"]}
+          text="Mnemo captures decisions, action items, and questions from your AI conversations — and makes them searchable forever."
+          highlightWords={["Mnemo", "decisions", "action", "questions", "searchable"]}
           className="font-heading text-center text-2xl font-semibold leading-relaxed tracking-tight sm:text-3xl"
         />
       </div>

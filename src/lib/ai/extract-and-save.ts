@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma"
-import { getProvider } from "@/lib/ai/providers/registry"
+import { extractWithConfig } from "@/lib/ai/extraction"
+import { getLlmConfigForUser } from "@/lib/ai/user-llm"
+import { stripImageLinks } from "@/lib/import/image-markdown"
 
 export interface ExtractionCounts {
   decisions: number
@@ -25,7 +27,9 @@ export async function extractAndSave(params: {
   const counts: ExtractionCounts = { decisions: 0, actionItems: 0, questions: 0 }
 
   try {
-    const result = await getProvider().extractConversation(text)
+    // The model reads text only — swap saved-image links for a plain marker.
+    const plain = stripImageLinks(text)
+    const result = await extractWithConfig(await getLlmConfigForUser(userId), plain)
 
     if (result.decisions?.length) {
       await prisma.decision.createMany({

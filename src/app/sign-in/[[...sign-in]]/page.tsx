@@ -3,7 +3,7 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Sign In",
-  description: "Sign in to your RelayOS account",
+  description: "Sign in to your Mnemo account",
 }
 
 export default function SignInPage() {
@@ -13,7 +13,7 @@ export default function SignInPage() {
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Sign in to your RelayOS account
+            Sign in to your Mnemo account
           </p>
         </div>
         <SignIn

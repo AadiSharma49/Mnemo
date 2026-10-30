@@ -1,12 +1,12 @@
-# RelayOS — Full Project Context
+# Mnemo — Full Project Context
 
 > Paste this to any AI assistant to give it complete context on the project.
 
-## 1. What RelayOS is
-RelayOS is a **Decision Intelligence Platform** — a "memory layer" that turns AI
+## 1. What Mnemo is
+Mnemo is a **Decision Intelligence Platform** — a "memory layer" that turns AI
 conversations into structured, searchable organizational memory. Engineers make
 decisions inside Claude/ChatGPT/Cursor and lose them when the chat closes.
-RelayOS captures those conversations, uses AI to extract **decisions, action
+Mnemo captures those conversations, uses AI to extract **decisions, action
 items, and questions**, stores them, and makes them searchable. It also has a
 **Memory Chat** (RAG) that answers questions using only the stored data, with
 citations.
@@ -62,10 +62,10 @@ retries 429/500/502/503/504) and **JSON mode** (`responseMimeType:
 JSON.
 
 ## 6. Browser extension (`/extension`, vanilla JS, MV3)
-One-click capture of AI conversations into RelayOS. Files: `manifest.json`,
+One-click capture of AI conversations into Mnemo. Files: `manifest.json`,
 `content.js` (DOM scrapers for Claude/ChatGPT/Gemini + fallback), `popup.html`
 /`popup.js`/`styles.css`, `background.js`, `icons/`.
-- Auth: user pastes a `relay_sk_...` API key (v1). Key stored hashed server-side.
+- Auth: user pastes a `mnemo_sk_...` API key (v1). Key stored hashed server-side.
 - Flow: popup lists workspaces → user clicks Capture → content script scrapes
   the conversation → POST `/api/extension/import` → conversation saved + AI
   extraction runs + items saved → popup shows "Found N decisions…".

@@ -1,8 +1,8 @@
-# RelayOS — System Design
+# Mnemo — System Design
 
 ## Overview
 
-RelayOS is designed as a **memory-first** architecture. Every decision, action item, and question captured from conversations becomes a first-class record in PostgreSQL, searchable and auditable.
+Mnemo is designed as a **memory-first** architecture. Every decision, action item, and question captured from conversations becomes a first-class record in PostgreSQL, searchable and auditable.
 
 ---
 

@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   typedRoutes: false,
+  // Headless-browser deps for share-link rendering; must load via native require.
+  serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium"],
   experimental: {
     strictRouteTypes: false,
     // Persistent dev cache grew past 1 GB and its compaction exhausted the

@@ -1,8 +1,8 @@
-# RelayOS — Decision Intelligence Platform
+# Mnemo — Decision Intelligence Platform
 
-RelayOS is a **Decision Intelligence Platform**. It captures, organizes, and explains decisions across projects so teams never lose context.
+Mnemo is a **Decision Intelligence Platform**. It captures, organizes, and explains decisions across projects so teams never lose context.
 
-## What RelayOS IS
+## What Mnemo IS
 
 - **Decision Memory** — A persistent, searchable record of every decision made across your organization
 - **Conversation Import** — Ingest conversations from ChatGPT, Claude, Gemini, Cursor, Notion, Discord
@@ -10,7 +10,7 @@ RelayOS is a **Decision Intelligence Platform**. It captures, organizes, and exp
 - **Knowledge Graph** — Maps relationships between decisions across projects
 - **Decision Search** — Natural language queries across your entire decision history
 
-## What RelayOS is NOT
+## What Mnemo is NOT
 
 - **NOT** a ChatGPT clone
 - **NOT** a note-taking app

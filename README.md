@@ -1,6 +1,6 @@
-# RelayOS
+# Mnemo
 
-**A memory layer for your AI conversations.** RelayOS captures your ChatGPT,
+**A memory layer for your AI conversations.** Mnemo captures your ChatGPT,
 Claude and Gemini chats, uses AI to extract the **decisions**, **action items**
 and **open questions** inside them, and makes them searchable by meaning — so the
 reasoning you produce with AI doesn't vanish the moment you close the tab.
@@ -13,7 +13,7 @@ Context Protocol**, so your assistant can read your past decisions while you wor
 ## Features
 
 - **One-click capture** — a Chrome/Edge extension captures the open conversation
-  on ChatGPT, Claude or Gemini and sends it to RelayOS. No copy-paste.
+  on ChatGPT, Claude or Gemini and sends it to Mnemo. No copy-paste.
 - **AI extraction** — each conversation is turned into structured decisions,
   action items and questions (Google Gemini).
 - **Semantic search** — find decisions by meaning, not keywords, via pgvector
@@ -50,9 +50,11 @@ Capture ─────────────► Extract ───────
  import / paste)         provider layer)    Postgres)     embeddings)    Memory Chat, MCP)
 ```
 
-- **Provider abstraction** — `src/lib/ai/providers/` defines an `AIProvider`
-  interface and a registry factory selected by the `AI_PROVIDER` env var. Gemini
-  is the implemented provider; the layer is built so more can be added.
+- **Bring your own model** — `src/lib/ai/llm.ts` speaks to Gemini, OpenAI,
+  Anthropic, OpenRouter, Ollama and any OpenAI-compatible server through one
+  `complete()` call. Users pick a provider and paste their key in **Settings → AI
+  Model**; keys are stored encrypted (AES-256-GCM, `ENCRYPTION_SECRET`). Without
+  one, the server's Gemini key is the default.
 - **Multi-user isolation** — every query is scoped by `userId`, and mutations
   verify ownership (`where: { id, userId }`) before writing. Clerk users are
   mapped to Postgres `User` records via `getOrCreateUser()`.
@@ -144,7 +146,7 @@ authenticates with a personal API key generated in **Settings → API Key**.
 ## MCP server
 
 The MCP server in [`mcp-server/`](mcp-server/) is a zero-dependency stdio server
-that lets AI clients query your RelayOS decisions. See
+that lets AI clients query your Mnemo decisions. See
 [`mcp-server/CLIENTS.md`](mcp-server/CLIENTS.md) for Claude Code / Cursor /
 Windsurf / VS Code setup.
 
@@ -159,4 +161,4 @@ scaffolded but not yet wired in.
 
 ## License
 
-Proprietary — RelayOS.
+Proprietary — Mnemo.

@@ -3,7 +3,7 @@ import { getUserFromApiKey, corsPreflight, jsonWithCors } from "@/lib/api-auth"
 
 /**
  * GET /api/mcp/action-items
- * Lists the caller's action items for the RelayOS MCP server, newest first.
+ * Lists the caller's action items for the Mnemo MCP server, newest first.
  * Authenticated with a Bearer API key. Defaults to pending items so an agent
  * sees outstanding work; pass status=all to include completed ones.
  *

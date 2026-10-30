@@ -1,8 +1,8 @@
 import Link from "next/link"
 
 export const metadata = {
-  title: "Privacy Policy — RelayOS",
-  description: "How RelayOS and the RelayOS browser extension collect, use and store your data.",
+  title: "Privacy Policy — Mnemo",
+  description: "How Mnemo and the Mnemo browser extension collect, use and store your data.",
 }
 
 const LAST_UPDATED = "July 5, 2026"
@@ -11,7 +11,7 @@ export default function PrivacyPolicyPage() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
       <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
-        ← Back to RelayOS
+        ← Back to Mnemo
       </Link>
 
       <h1 className="mt-6 font-heading text-3xl font-bold tracking-tight sm:text-4xl">
@@ -22,9 +22,9 @@ export default function PrivacyPolicyPage() {
       <div className="prose-relay mt-10 space-y-8 text-[15px] leading-relaxed text-muted-foreground">
         <section>
           <p>
-            RelayOS is a decision-intelligence tool that captures your AI conversations and
+            Mnemo is a decision-intelligence tool that captures your AI conversations and
             extracts the decisions, action items and questions inside them so you can search and
-            revisit them later. This policy explains what the RelayOS web app and the RelayOS
+            revisit them later. This policy explains what the Mnemo web app and the Mnemo
             browser extension collect, why, and how it is handled.
           </p>
         </section>
@@ -37,7 +37,7 @@ export default function PrivacyPolicyPage() {
             </li>
             <li>
               <strong className="text-foreground">Content you capture</strong> — the text of AI
-              conversations you explicitly choose to send to RelayOS (via the extension, import, or
+              conversations you explicitly choose to send to Mnemo (via the extension, import, or
               paste), and the decisions, action items and questions extracted from them.
             </li>
             <li>
@@ -53,7 +53,7 @@ export default function PrivacyPolicyPage() {
             <strong className="text-foreground">when you click &ldquo;Capture&rdquo;</strong>. It
             does not run in the background, does not track your browsing, and does not read any page
             you have not explicitly asked it to capture. Captured text is sent directly to the
-            RelayOS server URL you configure, authenticated with your personal API key.
+            Mnemo server URL you configure, authenticated with your personal API key.
           </p>
         </Section>
 
@@ -70,7 +70,7 @@ export default function PrivacyPolicyPage() {
 
         <Section title="Where your data is stored">
           <p>
-            Your data is stored in a PostgreSQL database associated with your RelayOS instance.
+            Your data is stored in a PostgreSQL database associated with your Mnemo instance.
             API keys are stored only as one-way hashes — the plaintext key is shown to you once at
             generation time and cannot be recovered by us.
           </p>
@@ -86,7 +86,7 @@ export default function PrivacyPolicyPage() {
 
         <Section title="Contact">
           <p>
-            Questions about this policy or your data? Reach out to the RelayOS team through the
+            Questions about this policy or your data? Reach out to the Mnemo team through the
             support channel listed on your instance. We&rsquo;ll update this page and the date above
             when the policy changes.
           </p>

@@ -188,7 +188,7 @@ export function ArchitectureFlow() {
 
       {/* Header */}
       <div className="relative mb-8 flex items-center justify-end gap-2 text-sm font-medium text-muted-foreground">
-        <span className="font-heading">RelayOS Architecture</span>
+        <span className="font-heading">Mnemo Architecture</span>
         <Icons.arrowRight className="h-4 w-4" />
       </div>
 
@@ -236,9 +236,9 @@ export function ArchitectureFlow() {
           <div className="pipeline-connector-v h-6 lg:hidden" />
         </div>
 
-        {/* RIGHT — RelayOS Cloud */}
+        {/* RIGHT — Mnemo Cloud */}
         <div className="relative rounded-2xl border border-border/60 bg-background/40 p-5 pt-8 lg:w-64">
-          <ContainerLabel>RelayOS Cloud</ContainerLabel>
+          <ContainerLabel>Mnemo Cloud</ContainerLabel>
           <div className="space-y-3">
             <CloudCard icon={Icons.brain} label="Memory Chat" sub="Ask, get cited answers" />
             <CloudCard icon={Icons.search} label="Search & Dashboard" sub="Find anything, instantly" />

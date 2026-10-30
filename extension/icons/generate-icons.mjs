@@ -1,4 +1,4 @@
-// Generates RelayOS extension icons (16/48/128) as valid PNGs — pure Node, no deps.
+// Generates Mnemo extension icons (16/48/128) as valid PNGs — pure Node, no deps.
 // Draws a blue rounded square with a white "R". Re-run with: node generate-icons.mjs
 import { deflateSync } from "zlib"
 import { writeFileSync } from "fs"

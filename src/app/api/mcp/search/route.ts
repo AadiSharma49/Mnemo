@@ -3,7 +3,7 @@ import { searchDecisions } from "@/lib/search/decisions"
 
 /**
  * POST /api/mcp/search
- * Semantic search over the caller's decisions, for the RelayOS MCP server.
+ * Semantic search over the caller's decisions, for the Mnemo MCP server.
  * Authenticated with a Bearer API key (same keys the browser extension uses).
  *
  * Body: { query: string, workspaceId?: string, limit?: number }
