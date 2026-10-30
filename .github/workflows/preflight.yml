@@ -30,7 +30,8 @@ jobs:
         id: preflight
         run: node scripts/ci/preflight-changed.mjs "origin/${{ github.base_ref }}"
       - name: Comment on PR
-        if: always() && github.event.pull_request.head.repo.full_name == github.repository
+        # Only when the report exists (it isn't written if an earlier step failed) and the PR isn't from a fork.
+        if: always() && hashFiles('preflight-report.md') != '' && github.event.pull_request.head.repo.full_name == github.repository
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: preflight
