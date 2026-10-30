@@ -10,7 +10,12 @@
     <div class="app">
       <header class="header">
         <div class="brand">
-          <div class="logo">R</div>
+          <div class="logo">
+            <svg width="26" height="26" viewBox="0 0 512 512" fill="none" aria-hidden="true">
+              <path d="M148 372 V148 L256 282 L364 148 V372" stroke="#fff" stroke-width="58" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="256" cy="340" r="26" fill="#fff"/>
+            </svg>
+          </div>
           <span class="brand-name">Mnemo</span>
         </div>
         <span id="statusDot" class="status-dot" title="Not connected"></span>
@@ -27,13 +32,16 @@
         <h2 class="title">Connect your account</h2>
         <p class="muted">Paste your Mnemo API key to capture conversations.</p>
 
-        <label class="label" for="apiBase">Mnemo URL</label>
-        <input id="apiBase" class="input" type="text" placeholder="http://localhost:3000" />
-
         <label class="label" for="apiKey">API key</label>
         <input id="apiKey" class="input" type="password" placeholder="mnemo_sk_…" />
 
         <button id="getKeyBtn" class="link-btn">Get my API key →</button>
+
+        <details id="advanced" class="advanced">
+          <summary>Self-hosting? Use a different server</summary>
+          <label class="label" for="apiBase">Server URL</label>
+          <input id="apiBase" class="input" type="url" placeholder="https://mnemo.app" />
+        </details>
         <p id="connectError" class="error hidden"></p>
         <button id="saveBtn" class="btn btn-primary">Connect</button>
       </section>

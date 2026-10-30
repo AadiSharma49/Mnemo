@@ -2,10 +2,10 @@
 
 Two ways to get the extension onto other people's browsers.
 
-> ⚠️ **Prerequisite for both:** Mnemo must be reachable at a URL your users can
-> hit. For anyone other than you, that means **Mnemo must be deployed** (e.g.
-> `https://mnemo.yourdomain.com`), not `localhost:3000`. Users enter that URL
-> in the extension's **Connect** screen.
+> ⚠️ **Prerequisite for both:** Mnemo must be deployed at a public URL. Set that
+> URL as `DEFAULT_BASE` at the top of `popup.js` (and in `background.js`) before
+> packaging, so users never have to type a server address. Self-hosters can still
+> override it under **Self-hosting? Use a different server** on the Connect screen.
 
 ---
 

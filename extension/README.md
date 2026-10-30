@@ -28,9 +28,9 @@ The extension talks to these Mnemo endpoints (already built):
 - `GET  /api/extension/workspaces` — list your workspaces (API-key auth)
 - `POST /api/extension/import` — capture + auto-extract (API-key auth)
 
-Make sure Mnemo is running (`npm run dev` → `http://localhost:3000`).
-**Restart the dev server once** after the `apiKey` DB change so the fresh Prisma
-engine is loaded.
+The extension talks to the hosted Mnemo by default. To develop against a local
+server (`npm run dev`), open **Self-hosting? Use a different server** on the
+connect screen and enter `http://localhost:3000`.
 
 ---
 
@@ -49,19 +49,21 @@ engine is loaded.
 
 ## Get your API key
 
-1. Make sure you're **signed in** to Mnemo in the browser
-2. Visit `http://localhost:3000/api/user/api-key`
-3. Copy the `key` value (looks like `mnemo_sk_…`) — **it's shown only once**
-   - Lost it? Send a `POST` to the same URL to regenerate a fresh one.
+1. Sign in to Mnemo and open **Settings → API Key** (the extension's
+   **Get my API key →** link goes straight there)
+2. Click **Generate API Key** and copy it (looks like `mnemo_sk_…`) — **it's shown only once**
+   - Lost it? Click **Regenerate Key** on the same page.
 
 ---
 
 ## Connect the extension
 
 1. Click the Mnemo toolbar icon
-2. **Mnemo URL**: `http://localhost:3000` (or your deployed URL)
-3. **API key**: paste the `mnemo_sk_…` key
-4. Click **Connect**
+2. **API key**: paste the `mnemo_sk_…` key
+3. Click **Connect**
+
+Self-hosting? Expand **Self-hosting? Use a different server** and enter your
+own `https://` URL (plain `http://` is only accepted for localhost).
 
 ---
 

@@ -46,7 +46,7 @@ function normalizeSeverity(s: unknown): Severity {
 }
 
 function parseJudgements(raw: string): ConflictJudgement[] {
-  let s = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim()
+  const s = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim()
 
   const attempt = (text: string): unknown => {
     try {

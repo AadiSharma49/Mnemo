@@ -44,8 +44,27 @@ export function AiModelSettings() {
   }, [])
 
   React.useEffect(() => {
-    void load()
-  }, [load])
+    let cancelled = false
+    ;(async () => {
+      try {
+        const res = await fetch("/api/user/ai-settings", { cache: "no-store" })
+        if (!res.ok) throw new Error()
+        const data: Saved = await res.json()
+        if (cancelled) return
+        setSaved(data)
+        if (data.configured && data.provider) {
+          setProvider(data.provider)
+          setModel(data.model ?? "")
+          setBaseUrl(data.baseUrl ?? "")
+        }
+      } catch {
+        if (!cancelled) setNotice({ kind: "error", text: "Couldn't load your AI settings. Refresh and try again." })
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const preset = PROVIDER_PRESETS[provider]
   const keyIsSaved = !!saved?.hasKey && saved.provider === provider

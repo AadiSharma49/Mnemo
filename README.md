@@ -50,9 +50,11 @@ Capture ─────────────► Extract ───────
  import / paste)         provider layer)    Postgres)     embeddings)    Memory Chat, MCP)
 ```
 
-- **Provider abstraction** — `src/lib/ai/providers/` defines an `AIProvider`
-  interface and a registry factory selected by the `AI_PROVIDER` env var. Gemini
-  is the implemented provider; the layer is built so more can be added.
+- **Bring your own model** — `src/lib/ai/llm.ts` speaks to Gemini, OpenAI,
+  Anthropic, OpenRouter, Ollama and any OpenAI-compatible server through one
+  `complete()` call. Users pick a provider and paste their key in **Settings → AI
+  Model**; keys are stored encrypted (AES-256-GCM, `ENCRYPTION_SECRET`). Without
+  one, the server's Gemini key is the default.
 - **Multi-user isolation** — every query is scoped by `userId`, and mutations
   verify ownership (`where: { id, userId }`) before writing. Clerk users are
   mapped to Postgres `User` records via `getOrCreateUser()`.

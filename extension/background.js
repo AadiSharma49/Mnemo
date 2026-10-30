@@ -31,8 +31,8 @@ chrome.runtime.onInstalled.addListener((details) => {
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg?.action === "openKeyPage") {
-    const base = (msg.apiBase || "http://localhost:3000").replace(/\/$/, "")
-    chrome.tabs.create({ url: `${base}/api/user/api-key` })
+    const base = (msg.apiBase || "https://mnemo.app").replace(/\/$/, "")
+    chrome.tabs.create({ url: `${base}/dashboard/settings` })
     sendResponse({ ok: true })
     return true
   }
