@@ -75,6 +75,13 @@ export default async function WorkspaceDetailPage({
           <CreateDecisionButton workspaceId={workspace.id} />
           <CreateActionItemButton workspaceId={workspace.id} />
           <CreateQuestionButton workspaceId={workspace.id} />
+          <a
+            href={`/api/workspaces/${workspace.id}/export`}
+            className="inline-flex items-center gap-1.5 rounded-lg border bg-card px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"
+          >
+            <Icons.download className="h-4 w-4" />
+            <span>Export log</span>
+          </a>
           <Link
             href={`/dashboard/workspaces/${workspace.id}/memory-chat`}
             className="inline-flex items-center gap-1.5 rounded-lg border bg-card px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"

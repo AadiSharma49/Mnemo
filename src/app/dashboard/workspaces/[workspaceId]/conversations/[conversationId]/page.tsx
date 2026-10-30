@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/lib/icons"
+import { parseImageLine } from "@/lib/import/image-markdown"
 import { getOrCreateUser } from "@/lib/api-utils"
 import { DeleteConversationButton } from "./delete-button"
 import { ExtractReviewButton } from "./extract-review"
@@ -83,6 +84,19 @@ export default async function ConversationPage({
       <div className="rounded-xl border bg-card p-6">
         <div className="space-y-1">
           {lines.map((line: string, i: number) => {
+            const imageId = parseImageLine(line)
+            if (imageId) {
+              return (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={i}
+                  src={`/api/images/${imageId}`}
+                  alt="Image from the conversation"
+                  loading="lazy"
+                  className="my-2 max-h-96 max-w-full rounded-lg border bg-muted object-contain"
+                />
+              )
+            }
             const speakerMatch = line.match(/^([A-Za-zÀ-ÿ]+):/)
             if (speakerMatch) {
               const speaker = speakerMatch[1]

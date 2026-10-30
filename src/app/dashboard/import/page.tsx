@@ -196,7 +196,7 @@ export default function ImportPage() {
             </Button>
           </div>
           <p className="mt-1.5 text-xs text-muted-foreground">
-            In ChatGPT, open a chat → Share → Create link, then paste it here. Claude and Gemini block server-side fetching — for those, use the browser extension or paste the text.
+            In ChatGPT, open a chat → Share → Create link, then paste it here. Claude blocks server-side fetching — for Claude, use the browser extension or paste the text. Gemini links can take ~10 seconds.
           </p>
           <label className="mt-3 flex cursor-pointer items-center gap-2 text-sm">
             <input

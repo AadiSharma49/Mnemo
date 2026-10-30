@@ -38,7 +38,7 @@ Add a `mnemo` entry (use the **absolute path** to `index.mjs`):
   "mcpServers": {
     "mnemo": {
       "command": "node",
-      "args": ["D:\\Mnemo\\mcp-server\\index.mjs"],
+      "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
       "env": {
         "MNEMO_API_KEY": "mnemo_sk_your_key_here",
         "MNEMO_URL": "http://localhost:3000"

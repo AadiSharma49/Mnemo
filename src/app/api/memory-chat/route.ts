@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getOrCreateUser } from "@/lib/api-utils"
-import { fetchWithRetry, isRetryableStatus } from "@/lib/ai/fetch-retry"
+import { complete, LlmError } from "@/lib/ai/llm"
+import { getLlmConfigForUser } from "@/lib/ai/user-llm"
 
 const SYSTEM_PROMPT = `You are Mnemo, a decision intelligence assistant. Your role is to answer questions about a workspace using ONLY the provided context.
 
@@ -140,17 +141,16 @@ export async function POST(request: Request) {
       })
     }
 
-    // Call Gemini API
-    const apiKey = process.env.GEMINI_API_KEY
-    if (!apiKey) {
+    // Answer with the user's own model (Settings → AI Model), else the server default
+    let cfg
+    try {
+      cfg = await getLlmConfigForUser(user.id)
+    } catch (err) {
       return NextResponse.json(
-        { error: "GEMINI_API_KEY is not configured. Set it in .env to enable Memory Chat." },
-        { status: 500 }
+        { error: err instanceof Error ? err.message : "No AI model is connected.", code: "AI_NOT_CONFIGURED" },
+        { status: 400 }
       )
     }
-
-    const model = process.env.AI_MODEL || "gemini-2.5-flash"
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`
 
     const prompt = `${SYSTEM_PROMPT}
 
@@ -158,38 +158,20 @@ ${context}
 
 User Question: ${message}`
 
-    const response = await fetchWithRetry(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.1, maxOutputTokens: 2048 },
-      }),
-    })
-
-    if (!response.ok) {
-      const text = await response.text().catch(() => "")
-      console.error(`[memory-chat] Gemini error ${response.status}: ${text.slice(0, 300)}`)
-      // Transient overload/rate-limit — the retries above are already exhausted.
-      if (isRetryableStatus(response.status)) {
+    let answer: string
+    try {
+      answer = (await complete(cfg, { prompt, temperature: 0.1, maxTokens: 2048 })).trim()
+    } catch (err) {
+      console.error("[memory-chat] model error:", err instanceof Error ? err.message : err)
+      if (err instanceof LlmError) {
+        const status = err.kind === "busy" ? 503 : err.kind === "bad-response" ? 502 : 400
         return NextResponse.json(
-          { error: "The AI model is busy right now. Please try again in a moment.", code: "AI_BUSY" },
-          { status: 503 }
+          { error: err.message, code: err.kind === "busy" ? "AI_BUSY" : "AI_ERROR" },
+          { status }
         )
       }
-      return NextResponse.json(
-        { error: "The AI request failed. Please try again.", code: "AI_ERROR" },
-        { status: 502 }
-      )
+      return NextResponse.json({ error: "The AI request failed. Please try again.", code: "AI_ERROR" }, { status: 502 })
     }
-
-    const data = await response.json()
-    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text
-    if (!raw) {
-      throw new Error("Gemini returned empty response")
-    }
-
-    const answer = raw.trim()
 
     // Generate related follow-up questions
     let relatedQuestions: string[] = []
@@ -206,27 +188,13 @@ Rules:
 - Return ONLY a JSON array of 3 strings, nothing else
 - Example format: ["Question one?", "Question two?", "Question three?"]`
 
-      const questionsResponse = await fetchWithRetry(
-        url,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: relatedPrompt }] }],
-            generationConfig: { temperature: 0.3, maxOutputTokens: 150 },
-          }),
-        },
-        { retries: 1 }
-      )
-
-      if (questionsResponse.ok) {
-        const questionsData = await questionsResponse.json()
-        const questionsText = questionsData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "[]"
-        relatedQuestions = JSON.parse(questionsText)
-        relatedQuestions = relatedQuestions.filter((q: string) =>
-          q.toLowerCase() !== message.toLowerCase()
-        ).slice(0, 3)
-      }
+      const questionsText = (await complete(cfg, { prompt: relatedPrompt, temperature: 0.3, maxTokens: 300 })).trim()
+      const start = questionsText.indexOf("[")
+      const end = questionsText.lastIndexOf("]")
+      const parsed: unknown = JSON.parse(start !== -1 && end > start ? questionsText.slice(start, end + 1) : "[]")
+      relatedQuestions = (Array.isArray(parsed) ? parsed : [])
+        .filter((q): q is string => typeof q === "string" && q.toLowerCase() !== message.toLowerCase())
+        .slice(0, 3)
     } catch {
       relatedQuestions = []
     }

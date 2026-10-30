@@ -5,7 +5,7 @@
  * endpoint safe from SSRF):
  *   chatgpt     chatgpt.com/share/…, chat.openai.com/share/…   (dedicated parser)
  *   claude      claude.ai/share/…                              (snapshot API, then generic)
- *   gemini      gemini.google.com/share/…, g.co/gemini/share/… (generic)
+ *   gemini      share.gemini.google/…, gemini.google.com/share/… (headless browser render)
  *   perplexity  perplexity.ai/search/…, /page/…                (generic)
  *   grok        grok.com/share/…                               (generic)
  *   deepseek    chat.deepseek.com/share/…                      (generic)
@@ -19,6 +19,9 @@
  * provider as their share pages change.
  */
 
+import { randomUUID } from "node:crypto"
+import { BrowserUnavailableError, renderAndRun } from "@/lib/import/browser-render"
+
 export type ShareSource =
   | "chatgpt"
   | "claude"
@@ -30,12 +33,23 @@ export type ShareSource =
   | "poe"
   | "mistral"
 
+/** An image captured from a shared chat; its id is already referenced in `content`. */
+export interface SharedImage {
+  id: string
+  mimeType: string
+  data: Buffer
+}
+
+/** Markdown reference used inside saved transcripts; rendered by the conversation page. */
+export const imageMarkdown = (id: string) => `![image](/api/images/${id})`
+
 export interface SharedConversation {
   title: string
   content: string
   messageCount: number
   /** When the chat happened (ms epoch), if the page exposes it. */
   occurredAt: number | null
+  images: SharedImage[]
   source: ShareSource
 }
 
@@ -56,6 +70,8 @@ const PROVIDERS: ProviderRule[] = [
   { source: "chatgpt", label: "ChatGPT", hosts: ["chatgpt.com", "www.chatgpt.com", "chat.openai.com"], path: /^\/share\/(e\/)?[0-9a-f-]{8,}\/?$/i },
   { source: "claude", label: "Claude", hosts: ["claude.ai"], path: /^\/share\/[0-9a-f-]{8,}\/?$/i },
   { source: "gemini", label: "Gemini", hosts: ["gemini.google.com", "g.co"], path: /^\/(app\/)?(gemini\/)?share\/[\w-]+\/?$/i },
+  // Short links like https://share.gemini.google/KMIn83WrWEsd (redirect to gemini.google.com/share/…)
+  { source: "gemini", label: "Gemini", hosts: ["share.gemini.google"], path: /^\/[\w-]{6,}\/?$/ },
   { source: "perplexity", label: "Perplexity", hosts: ["perplexity.ai", "www.perplexity.ai"], path: /^\/(search|page)\/[\w-]+\/?$/i },
   { source: "grok", label: "Grok", hosts: ["grok.com"], path: /^\/share\/[\w-]+\/?$/i },
   { source: "deepseek", label: "DeepSeek", hosts: ["chat.deepseek.com"], path: /^\/share\/[\w-]+\/?$/i },
@@ -138,6 +154,25 @@ export async function fetchSharedConversation(raw: string): Promise<SharedConver
 
   let parsed: Parsed | null = null
 
+  // Gemini renders shared chats in the browser, so a plain fetch gets an empty shell.
+  if (source === "gemini") {
+    try {
+      parsed = await renderGeminiShare(url.toString())
+    } catch (e) {
+      if (e instanceof BrowserUnavailableError) {
+        throw new ShareImportError(
+          "Gemini shared chats need a browser to read. This server has none available — open the link and use the Mnemo extension to capture it instead.",
+          501
+        )
+      }
+      console.error("[share-url] gemini render failed:", e instanceof Error ? e.message : e)
+      throw new ShareImportError(
+        "Couldn't load that Gemini share page. The link may be private, deleted, or slow to respond — try again.",
+        502
+      )
+    }
+  }
+
   // Claude exposes a JSON snapshot endpoint; try it before scraping the page.
   if (source === "claude") {
     const id = url.pathname.split("/").filter(Boolean).pop()
@@ -160,7 +195,7 @@ export async function fetchSharedConversation(raw: string): Promise<SharedConver
     }
   }
 
-  if (!parsed) {
+  if (!parsed && source !== "gemini") {
     const res = await safeFetch(url, "text/html,application/xhtml+xml")
     if (res.status === 404) throw new ShareImportError("This share link doesn't exist or was deleted.", 404)
     if (!res.ok) {
@@ -176,16 +211,24 @@ export async function fetchSharedConversation(raw: string): Promise<SharedConver
       422
     )
   }
-  return { ...parsed, occurredAt: parsed.occurredAt ?? null, source }
+  return { ...parsed, occurredAt: parsed.occurredAt ?? null, images: parsed.images ?? [], source }
 }
 
-type Parsed = { title: string; content: string; messageCount: number; occurredAt?: number | null }
+type Parsed = {
+  title: string
+  content: string
+  messageCount: number
+  occurredAt?: number | null
+  images?: SharedImage[]
+}
 type Msg = { role: "user" | "assistant"; text: string }
 
 function toTranscript(title: string, msgs: Msg[], label: string): Parsed {
   return {
     title: title.trim() || `Shared ${label} conversation`,
-    content: msgs.map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.text}`).join("\n\n"),
+    content: msgs
+      .map((m) => `${m.role === "user" ? "User" : "Assistant"}:${m.text.startsWith("![") ? "\n" : " "}${m.text}`)
+      .join("\n\n"),
     messageCount: msgs.length,
   }
 }
@@ -261,6 +304,11 @@ function chatGPTTime(rec: Record<string, unknown>): number | null {
   return toMs(rec.create_time) ?? toMs(rec.update_time)
 }
 
+/** ChatGPT image parts point at private files we can't fetch anonymously; we only note them. */
+function isImagePart(p: unknown): boolean {
+  return !!p && typeof p === "object" && (p as { content_type?: unknown }).content_type === "image_asset_pointer"
+}
+
 interface ShareNode {
   message?: {
     author?: { role?: string }
@@ -288,7 +336,10 @@ function findChatGPTConversation(root: unknown): Parsed | null {
         const parts = msg.content?.parts
         const text = (
           Array.isArray(parts)
-            ? parts.filter((p): p is string => typeof p === "string").join("\n")
+            ? parts
+                .map((p) => (typeof p === "string" ? p : isImagePart(p) ? "[image]" : ""))
+                .filter(Boolean)
+                .join("\n")
             : (msg.content?.text ?? "")
         ).trim()
         if (text) msgs.push({ role, text })
@@ -404,4 +455,91 @@ function decodeEntities(s: string): string {
     .replace(/&quot;/g, '"')
     .replace(/&#39;|&#x27;/g, "'")
     .replace(/&nbsp;/g, " ")
+}
+
+/* ── Gemini: render in a headless browser, read the share viewer's DOM ── */
+
+const GEMINI_HOSTS = new Set(["gemini.google.com", "share.gemini.google", "g.co"])
+
+// Runs inside the page. A string (not a function) keeps bundler helpers out of it.
+const GEMINI_EXTRACT_SCRIPT = `(() => {
+  const turns = [];
+  document.querySelectorAll("share-viewer user-query, share-viewer response-container").forEach((el) => {
+    const isUser = el.tagName.toLowerCase() === "user-query";
+    const text = (el.innerText || el.textContent || "").trim();
+    const images = [];
+    el.querySelectorAll("img").forEach((img) => {
+      const src = img.currentSrc || img.src || "";
+      const label = ((img.className || "") + " " + (img.alt || "")).toLowerCase();
+      if (src.startsWith("https://") && !/avatar|icon|favicon|logo|sparkle/.test(label) && !images.includes(src)) images.push(src);
+    });
+    if (text || images.length) turns.push({ role: isUser ? "user" : "assistant", text, images });
+  });
+  const title = (document.querySelector("share-viewer h1")?.textContent || "").trim();
+  const created = document.querySelector(".publish-time-mode")?.textContent || "";
+  return { turns, title, created };
+})()`
+
+async function renderGeminiShare(url: string): Promise<Parsed | null> {
+  const page = await renderAndRun<{
+    turns: { role: "user" | "assistant"; text: string; images: string[] }[]
+    title: string
+    created: string
+  }>(
+    url,
+    {
+      readySelector: "share-viewer user-query",
+      isAllowedFinalUrl: (u) => u.protocol === "https:" && GEMINI_HOSTS.has(u.hostname),
+    },
+    GEMINI_EXTRACT_SCRIPT
+  )
+
+  if (!page.turns.length) return null
+
+  // "Created with Auto July 17, 2025 at 10:42 AM" → the date the chat was made.
+  const m = /([A-Z][a-z]+ \d{1,2}, \d{4}) at (\d{1,2}:\d{2} [AP]M)/.exec(page.created)
+  const ts = m ? Date.parse(`${m[1]} ${m[2]}`) : NaN
+
+  const images: SharedImage[] = []
+  const msgs: Msg[] = []
+  for (const turn of page.turns) {
+    const parts = turn.text ? [turn.text] : []
+    for (const src of turn.images) {
+      const img = images.length < MAX_IMAGES ? await downloadImage(src, images) : null
+      parts.push(img ? imageMarkdown(img.id) : "[image unavailable]")
+    }
+    msgs.push({ role: turn.role, text: parts.join("\n") })
+  }
+
+  const t = toTranscript(page.title, msgs, "Gemini")
+  return { ...t, occurredAt: Number.isFinite(ts) ? ts : null, images }
+}
+
+const MAX_IMAGES = 24
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024
+const MAX_TOTAL_IMAGE_BYTES = 20 * 1024 * 1024
+const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"])
+
+/** Downloads one chat image (Google-hosted only) and records it; null if it can't be fetched safely. */
+async function downloadImage(src: string, saved: SharedImage[]): Promise<SharedImage | null> {
+  try {
+    const url = new URL(src)
+    if (url.protocol !== "https:" || !url.hostname.endsWith(".googleusercontent.com")) return null
+    const res = await fetch(url, {
+      headers: { "User-Agent": BROWSER_UA },
+      signal: AbortSignal.timeout(15_000),
+      cache: "no-store",
+    })
+    if (!res.ok || !new URL(res.url).hostname.endsWith(".googleusercontent.com")) return null
+    const mimeType = (res.headers.get("content-type") || "").split(";")[0].trim().toLowerCase()
+    if (!IMAGE_TYPES.has(mimeType)) return null
+    const data = Buffer.from(await res.arrayBuffer())
+    const total = saved.reduce((n, i) => n + i.data.length, 0)
+    if (data.length === 0 || data.length > MAX_IMAGE_BYTES || total + data.length > MAX_TOTAL_IMAGE_BYTES) return null
+    const image = { id: randomUUID(), mimeType, data }
+    saved.push(image)
+    return image
+  } catch {
+    return null
+  }
 }

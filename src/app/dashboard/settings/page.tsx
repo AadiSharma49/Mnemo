@@ -2,6 +2,7 @@ import { Metadata } from "next"
 import { getOrCreateUser } from "@/lib/api-utils"
 import { ApiKeySettings } from "./api-key-settings"
 import { ProfileSettings } from "./profile-settings"
+import { AiModelSettings } from "./ai-model-settings"
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -27,6 +28,8 @@ export default async function SettingsPage() {
           avatarUrl: user.avatarUrl,
         }}
       />
+
+      <AiModelSettings />
 
       <ApiKeySettings />
 

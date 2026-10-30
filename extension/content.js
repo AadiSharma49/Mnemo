@@ -46,12 +46,19 @@
   }
 
   // ── Gemini ──
+  function geminiTurnSelector() {
+    return document.querySelector("model-response")
+      ? "user-query, model-response"
+      : "user-query, response-container"
+  }
+
   function extractGemini() {
     const parts = []
-    const nodes = document.querySelectorAll("user-query, model-response")
+    // Shared chats (/share/…) render replies as <response-container>, not <model-response>.
+    const nodes = document.querySelectorAll(geminiTurnSelector())
     nodes.forEach((n) => {
       const isUser = n.tagName.toLowerCase() === "user-query"
-      const text = clean(n.innerText)
+      const text = clean(n.innerText) || (isUser ? "[image or file attachment]" : "")
       if (text) parts.push(`${isUser ? "Human" : "Assistant"}: ${text}`)
     })
     return parts.join("\n\n")
@@ -107,7 +114,7 @@
     if (source === "claude")
       sel = '[data-testid="user-message"], [data-testid="assistant-message"], .font-claude-message'
     else if (source === "chatgpt") sel = "[data-message-author-role]"
-    else if (source === "gemini") sel = "user-query, model-response"
+    else if (source === "gemini") sel = geminiTurnSelector()
     if (!sel) return 0
     try {
       return document.querySelectorAll(sel).length

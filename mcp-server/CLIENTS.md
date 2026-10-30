@@ -21,8 +21,8 @@ with two environment variables:
 > **deployed** Mnemo URL (e.g. `https://mnemo.yourdomain.com`). With
 > `localhost` it only works on the machine running Mnemo.
 
-Replace `D:\\Mnemo\\mcp-server\\index.mjs` below with your real absolute path
-(use **double backslashes** on Windows).
+Replace `/absolute/path/to/Mnemo/mcp-server/index.mjs` below with your real absolute path
+(on Windows, forward slashes like `D:/RelayOS/mcp-server/index.mjs` work, or use double backslashes).
 
 ---
 
@@ -37,7 +37,7 @@ Config file:
   "mcpServers": {
     "mnemo": {
       "command": "node",
-      "args": ["D:\\Mnemo\\mcp-server\\index.mjs"],
+      "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
       "env": {
         "MNEMO_API_KEY": "mnemo_sk_your_key",
         "MNEMO_URL": "http://localhost:3000"
@@ -61,7 +61,7 @@ or **Settings → MCP → Add new server**.
   "mcpServers": {
     "mnemo": {
       "command": "node",
-      "args": ["D:\\Mnemo\\mcp-server\\index.mjs"],
+      "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
       "env": {
         "MNEMO_API_KEY": "mnemo_sk_your_key",
         "MNEMO_URL": "http://localhost:3000"
@@ -89,7 +89,7 @@ Create `.vscode/mcp.json` in your project:
     "mnemo": {
       "type": "stdio",
       "command": "node",
-      "args": ["D:\\Mnemo\\mcp-server\\index.mjs"],
+      "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
       "env": {
         "MNEMO_API_KEY": "mnemo_sk_your_key",
         "MNEMO_URL": "http://localhost:3000"
@@ -112,7 +112,7 @@ Cline → **MCP Servers** → **Configure MCP Servers** (opens
   "mcpServers": {
     "mnemo": {
       "command": "node",
-      "args": ["D:\\Mnemo\\mcp-server\\index.mjs"],
+      "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
       "env": {
         "MNEMO_API_KEY": "mnemo_sk_your_key",
         "MNEMO_URL": "http://localhost:3000"
@@ -131,7 +131,7 @@ mcpServers:
   - name: mnemo
     command: node
     args:
-      - D:\\Mnemo\\mcp-server\\index.mjs
+      - /absolute/path/to/Mnemo/mcp-server/index.mjs
     env:
       MNEMO_API_KEY: mnemo_sk_your_key
       MNEMO_URL: http://localhost:3000
@@ -149,7 +149,7 @@ mcpServers:
   "mcpServers": {
     "mnemo": {
       "command": "node",
-      "args": ["D:\\Mnemo\\mcp-server\\index.mjs"],
+      "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
       "env": {
         "MNEMO_API_KEY": "mnemo_sk_your_key",
         "MNEMO_URL": "http://localhost:3000"
@@ -171,7 +171,7 @@ In `settings.json` under `context_servers`:
     "mnemo": {
       "command": {
         "path": "node",
-        "args": ["D:\\Mnemo\\mcp-server\\index.mjs"],
+        "args": ["/absolute/path/to/Mnemo/mcp-server/index.mjs"],
         "env": {
           "MNEMO_API_KEY": "mnemo_sk_your_key",
           "MNEMO_URL": "http://localhost:3000"

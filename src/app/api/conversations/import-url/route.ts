@@ -42,8 +42,14 @@ export async function POST(request: Request) {
     const counts = { decisions: 0, actionItems: 0, questions: 0 }
 
     // Same chat already imported into this workspace — reuse it.
+    // Chats with images get fresh image ids on every fetch, so also match on title + chat date.
+    const occurredAt = shared.occurredAt ? new Date(shared.occurredAt) : null
     const existing = await prisma.conversation.findFirst({
-      where: { workspaceId, userId, content },
+      where: {
+        workspaceId,
+        userId,
+        OR: [{ content }, ...(occurredAt ? [{ title: shared.title.slice(0, 100), occurredAt }] : [])],
+      },
     })
     if (existing) {
       // Backfill the real chat date on copies imported before dates were tracked.
@@ -66,7 +72,15 @@ export async function POST(request: Request) {
         content,
         workspaceId,
         userId,
-        occurredAt: shared.occurredAt ? new Date(shared.occurredAt) : null,
+        occurredAt,
+        images: {
+          create: shared.images.map((img) => ({
+            id: img.id,
+            mimeType: img.mimeType,
+            data: img.data,
+            userId,
+          })),
+        },
       },
     })
 
@@ -84,7 +98,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { conversation, duplicate: false, counts, extractionError },
+      { conversation, duplicate: false, counts, extractionError, images: shared.images.length },
       { status: 201 }
     )
   } catch (error) {

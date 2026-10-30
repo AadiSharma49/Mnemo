@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { judgeConflicts, type Severity } from "@/lib/ai/conflict"
+import { getLlmConfigForUser } from "@/lib/ai/user-llm"
 
 /**
  * Detects contradicting decisions.
@@ -87,7 +88,8 @@ export async function scanConflicts(userId: string, workspaceId?: string): Promi
       aSummary: r.a_summary,
       bTitle: r.b_title,
       bSummary: r.b_summary,
-    }))
+    })),
+    await getLlmConfigForUser(userId)
   )
 
   const conflicts: ConflictResult[] = []
