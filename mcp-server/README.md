@@ -15,6 +15,7 @@ decision history and answer from it.
 | `list_decisions` | Recent decisions, optionally filtered by workspace / status |
 | `list_action_items` | Your to-dos (pending by default) |
 | `list_open_questions` | Things still undecided |
+| `get_project_context` | A brief of what's already decided / ruled out — call before suggesting approaches |
 | `list_workspaces` | Your workspaces + item counts (to scope the tools above) |
 
 ## Requirements
