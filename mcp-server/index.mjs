@@ -197,6 +197,25 @@ const TOOLS = [
         .join("\n\n")
     },
   },
+  {
+    name: "get_project_context",
+    description:
+      "Get a brief of what the user has ALREADY decided in a workspace: settled decisions, options they ruled out, and open questions. " +
+      "Call this at the START of a task (before suggesting tools, architecture or approaches) so you don't re-propose anything they rejected. " +
+      "Pass `topic` to put the most relevant decisions first.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        workspaceId: { type: "string", description: "Workspace id (see list_workspaces)." },
+        topic: { type: "string", description: "Optional: what you're about to work on, e.g. 'database choice'." },
+      },
+      required: ["workspaceId"],
+    },
+    handler: async (a) => {
+      const data = await relay("/api/mcp/context", { query: { workspaceId: a.workspaceId, topic: a.topic } })
+      return data.brief || "No context captured yet."
+    },
+  },
 ]
 
 const TOOL_BY_NAME = new Map(TOOLS.map((t) => [t.name, t]))
