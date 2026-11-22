@@ -88,13 +88,3 @@ export async function getCurrentUserId(): Promise<string> {
   const user = await getOrCreateUser()
   return user.id
 }
-
-export async function getWorkspaceOrThrow(workspaceId: string) {
-  const userId = await getCurrentUserId()
-  const workspace = await prisma.workspace.findFirst({
-    where: { id: workspaceId, userId },
-    include: { conversations: { orderBy: { createdAt: "desc" } } },
-  })
-  if (!workspace) throw new Error("Workspace not found")
-  return workspace
-}

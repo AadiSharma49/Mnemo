@@ -11,6 +11,7 @@ import { ImportConversationButton } from "./import"
 import { CreateDecisionButton } from "./decisions"
 import { CreateActionItemButton } from "./action-items"
 import { CreateQuestionButton } from "./questions"
+import { CopyBriefButton } from "./copy-brief-button"
 
 export const dynamic = "force-dynamic"
 export const revalidate = 0
@@ -75,6 +76,7 @@ export default async function WorkspaceDetailPage({
           <CreateDecisionButton workspaceId={workspace.id} />
           <CreateActionItemButton workspaceId={workspace.id} />
           <CreateQuestionButton workspaceId={workspace.id} />
+          <CopyBriefButton workspaceId={workspace.id} />
           <a
             href={`/api/workspaces/${workspace.id}/export`}
             className="inline-flex items-center gap-1.5 rounded-lg border bg-card px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"

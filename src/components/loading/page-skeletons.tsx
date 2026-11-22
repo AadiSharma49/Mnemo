@@ -203,59 +203,7 @@ export function DecisionSkeleton() {
   )
 }
 
-export function ActionItemSkeleton() {
-  return (
-    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
-      <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-4 w-64" />
-        </div>
-        <Skeleton className="h-10 w-36 rounded-lg" />
-      </div>
-      <div className="space-y-2">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="rounded-xl border bg-card p-4">
-            <div className="flex items-center gap-3">
-              <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-3 w-1/3" />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
 
-export function QuestionSkeleton() {
-  return (
-    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
-      <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-4 w-64" />
-        </div>
-        <Skeleton className="h-10 w-36 rounded-lg" />
-      </div>
-      <div className="space-y-2">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="rounded-xl border bg-card p-4">
-            <div className="flex items-center gap-3">
-              <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-3 w-1/3" />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
 
 export function SettingsSkeleton() {
   return (
