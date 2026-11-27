@@ -53,12 +53,25 @@ export function GlobalSearchDialog({
   onOpenChange: (open: boolean) => void
 }) {
   const [query, setQuery] = React.useState("")
-  const [results, setResults] = React.useState<SearchResponse["results"] | null>(null)
+  const [fetched, setResults] = React.useState<SearchResponse["results"] | null>(null)
   const [loading, setLoading] = React.useState(false)
   const [selectedIndex, setSelectedIndex] = React.useState(0)
   const inputRef = React.useRef<HTMLInputElement>(null)
+  // Results for an earlier, longer query are hidden once it gets too short.
+  const results = query.length >= 2 ? fetched : null
   const router = useRouter()
   const abortRef = React.useRef<AbortController | null>(null)
+
+  // Start fresh each time the dialog opens.
+  const [wasOpen, setWasOpen] = React.useState(open)
+  if (wasOpen !== open) {
+    setWasOpen(open)
+    if (open) {
+      setQuery("")
+      setResults(null)
+      setSelectedIndex(0)
+    }
+  }
 
   const flatResults = React.useMemo(() => {
     if (!results) return []
@@ -72,21 +85,13 @@ export function GlobalSearchDialog({
 
   React.useEffect(() => {
     if (open) {
-      setQuery("")
-      setResults(null)
-      setSelectedIndex(0)
       setTimeout(() => inputRef.current?.focus(), 100)
     }
   }, [open])
 
   React.useEffect(() => {
-    if (!query || query.length < 2) {
-      setResults(null)
-      return
-    }
+    if (query.length < 2) return
 
-    setLoading(true)
-    setSelectedIndex(0)
     abortRef.current?.abort()
     const controller = new AbortController()
 
@@ -150,7 +155,11 @@ export function GlobalSearchDialog({
           <Input
             ref={inputRef}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setSelectedIndex(0)
+              setLoading(e.target.value.length >= 2)
+            }}
             placeholder="Search conversations, decisions, action items, questions..."
             className="h-12 border-0 bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
           />
@@ -160,7 +169,7 @@ export function GlobalSearchDialog({
         </div>
 
         <div className="max-h-[60vh] overflow-y-auto p-2">
-          {loading && (
+          {loading && query.length >= 2 && (
             <div className="space-y-2 p-2">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex items-center gap-3 p-2">

@@ -112,9 +112,12 @@ export function EditWorkspaceDialog({
   const [name, setName] = React.useState(currentName)
   const [loading, setLoading] = React.useState(false)
 
-  React.useEffect(() => {
+  // Reset the field when the workspace is renamed elsewhere.
+  const [seenName, setSeenName] = React.useState(currentName)
+  if (seenName !== currentName) {
+    setSeenName(currentName)
     setName(currentName)
-  }, [currentName])
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -215,7 +218,7 @@ export function DeleteWorkspaceDialog({
         <DialogHeader>
           <DialogTitle>Delete Workspace</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete "{workspaceName}"? This will
+            Are you sure you want to delete &quot;{workspaceName}&quot;? This will
             also delete all conversations in this workspace. This action cannot
             be undone.
           </DialogDescription>

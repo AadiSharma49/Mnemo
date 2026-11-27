@@ -1,11 +1,11 @@
 import { fetchWithRetry } from "./fetch-retry"
 
 /**
- * Text embeddings via Google's `text-embedding-004` model (768 dimensions),
+ * Text embeddings via Google's `gemini-embedding-001` model, cut to 768 dimensions,
  * used for semantic search over decisions. Retries transient failures.
  */
 
-const EMBED_MODEL = "text-embedding-004"
+const EMBED_MODEL = "gemini-embedding-001"
 export const EMBED_DIM = 768
 
 export async function embedText(text: string): Promise<number[]> {
@@ -21,6 +21,7 @@ export async function embedText(text: string): Promise<number[]> {
     body: JSON.stringify({
       model: `models/${EMBED_MODEL}`,
       content: { parts: [{ text: text.slice(0, 8000) }] },
+      outputDimensionality: EMBED_DIM,
     }),
   })
 

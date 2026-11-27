@@ -13,6 +13,9 @@ import { fetchSharedConversation, ShareImportError } from "@/lib/import/share-ur
  *   201 when created, 200 when the same chat was already imported.
  *   autoExtract (default false) runs AI extraction and saves the results.
  */
+// Long chats are read in several model calls.
+export const maxDuration = 300
+
 export async function POST(request: Request) {
   try {
     const userId = await getCurrentUserId()

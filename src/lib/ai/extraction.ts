@@ -1,4 +1,6 @@
 import { complete, type LlmConfig } from "./llm"
+import { dropStale, pickParts } from "./split"
+import { redactSecrets } from "@/lib/redact"
 
 export interface ExtractionResult {
   decisions: Array<{
@@ -46,9 +48,6 @@ Return format:
 
 If nothing fits a category, return an empty array for that category.`
 
-// Cap input so extraction stays fast and the JSON output can't be truncated.
-const MAX_INPUT_CHARS = 24000
-
 function normalize(obj: unknown): ExtractionResult {
   const r = (obj ?? {}) as ExtractionResult
   if (!Array.isArray(r.decisions)) r.decisions = []
@@ -80,16 +79,34 @@ export function parseExtraction(raw: string): ExtractionResult {
   throw new Error("The AI returned a malformed response. Please try again.")
 }
 
-export async function extractWithConfig(cfg: LlmConfig, content: string): Promise<ExtractionResult> {
-  const trimmed =
-    content.length > MAX_INPUT_CHARS ? content.slice(0, MAX_INPUT_CHARS) + "\n\n[conversation truncated]" : content
+/** Keeps one entry per title; the one from the later part wins. */
+function uniqueBy<T>(items: T[], key: (item: T) => string): T[] {
+  return [...new Map(items.map((item) => [String(key(item)).trim().toLowerCase(), item])).values()]
+}
 
-  const raw = await complete(cfg, {
-    system: SYSTEM_PROMPT,
-    prompt: `Extract decisions, action items, and questions from this conversation:\n\n${trimmed}`,
-    temperature: 0.1,
-    maxTokens: 8192,
-    json: true,
-  })
-  return parseExtraction(raw)
+export async function extractWithConfig(cfg: LlmConfig, content: string): Promise<ExtractionResult> {
+  const { parts } = pickParts(redactSecrets(content).text)
+
+  const results: ExtractionResult[] = []
+  for (const [i, part] of parts.entries()) {
+    const raw = await complete(cfg, {
+      system: SYSTEM_PROMPT,
+      prompt: `Extract decisions, action items, and questions from this conversation${
+        parts.length > 1 ? ` (part ${i + 1} of ${parts.length})` : ""
+      }:\n\n${part}`,
+      temperature: 0.1,
+      maxTokens: 8192,
+      json: true,
+    })
+    results.push(parseExtraction(raw))
+  }
+
+  let decisions = uniqueBy(results.flatMap((r) => r.decisions), (d) => d.title)
+  if (parts.length > 1) decisions = await dropStale(cfg, decisions, (d) => `${d.title} — ${d.summary}`)
+
+  return {
+    decisions,
+    actionItems: uniqueBy(results.flatMap((r) => r.actionItems), (a) => a.title),
+    questions: uniqueBy(results.flatMap((r) => r.questions), (q) => q.question),
+  }
 }
