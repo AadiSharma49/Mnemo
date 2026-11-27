@@ -6,6 +6,9 @@ import { getLlmConfigForUser } from "@/lib/ai/user-llm"
 import { LlmError } from "@/lib/ai/llm"
 import { stripImageLinks } from "@/lib/import/image-markdown"
 
+// Long chats are read in several model calls.
+export const maxDuration = 300
+
 export async function POST(request: Request) {
   try {
     const userId = await getCurrentUserId()

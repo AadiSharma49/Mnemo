@@ -12,7 +12,7 @@ export interface ProviderPreset {
 }
 
 export const PROVIDER_PRESETS: Record<LlmProvider, ProviderPreset> = {
-  gemini: { label: "Google Gemini", defaultModel: "gemini-2.5-flash", needsKey: true, needsBaseUrl: false, keyHint: "AIza…" },
+  gemini: { label: "Google Gemini", defaultModel: "gemini-flash-lite-latest", needsKey: true, needsBaseUrl: false, keyHint: "AIza…" },
   openai: { label: "OpenAI", defaultModel: "gpt-4o-mini", defaultBaseUrl: "https://api.openai.com/v1", needsKey: true, needsBaseUrl: false, keyHint: "sk-…" },
   anthropic: { label: "Anthropic (Claude)", defaultModel: "claude-haiku-5-5", needsKey: true, needsBaseUrl: false, keyHint: "sk-ant-…" },
   openrouter: { label: "OpenRouter", defaultModel: "openai/gpt-4o-mini", defaultBaseUrl: "https://openrouter.ai/api/v1", needsKey: true, needsBaseUrl: false, keyHint: "sk-or-…" },

@@ -8,6 +8,7 @@ import { parseImageLine } from "@/lib/import/image-markdown"
 import { getOrCreateUser } from "@/lib/api-utils"
 import { DeleteConversationButton } from "./delete-button"
 import { ExtractReviewButton } from "./extract-review"
+import { HandoffPanel } from "./handoff-panel"
 
 export const dynamic = "force-dynamic"
 export const revalidate = 0
@@ -79,6 +80,8 @@ export default async function ConversationPage({
           </Button>
         </div>
       </div>
+
+      <HandoffPanel conversationId={conversation.id} title={conversation.title} />
 
       {/* Conversation Content */}
       <div className="rounded-xl border bg-card p-6">

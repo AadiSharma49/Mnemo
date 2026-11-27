@@ -20,6 +20,9 @@ export async function OPTIONS() {
   return corsPreflight()
 }
 
+// Long chats are read in several model calls.
+export const maxDuration = 300
+
 export async function POST(request: Request) {
   const user = await getUserFromApiKey(request)
   if (!user) {

@@ -17,7 +17,7 @@ Context Protocol**, so your assistant can read your past decisions while you wor
 - **AI extraction** — each conversation is turned into structured decisions,
   action items and questions (Google Gemini).
 - **Semantic search** — find decisions by meaning, not keywords, via pgvector
-  embeddings (`text-embedding-004`, 768-dim, HNSW cosine index).
+  embeddings (`gemini-embedding-001`, 768-dim, HNSW cosine index).
 - **Memory Chat** — ask questions about a workspace and get answers grounded in
   your stored decisions.
 - **Conflict detection** — flags when a new decision contradicts an older one
@@ -37,7 +37,7 @@ Context Protocol**, so your assistant can read your past decisions while you wor
 | Auth | Clerk |
 | Database | PostgreSQL (Neon) + Prisma ORM |
 | Vectors | pgvector (HNSW, cosine) |
-| AI | Google Gemini (`gemini-2.5-flash`, `text-embedding-004`) |
+| AI | Google Gemini (`gemini-flash-lite-latest`, `gemini-embedding-001`) |
 | Integrations | Chrome extension (MV3), MCP server (stdio JSON-RPC) |
 
 ---

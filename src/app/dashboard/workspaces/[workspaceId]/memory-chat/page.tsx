@@ -97,11 +97,17 @@ export default function MemoryChatPage() {
   const bottomRef = React.useRef<HTMLDivElement>(null)
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
+  // Show the loading state as soon as the workspace changes.
+  const [historyFor, setHistoryFor] = React.useState<string>()
+  if (workspaceId && historyFor !== workspaceId) {
+    setHistoryFor(workspaceId)
+    setIsHistoryLoading(true)
+    setError(null)
+  }
+
   // Load conversation history
   React.useEffect(() => {
     if (!workspaceId) return
-    setIsHistoryLoading(true)
-    setError(null)
     fetch(`/api/memory-chat/history?workspaceId=${workspaceId}`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to load history")
@@ -301,7 +307,7 @@ export default function MemoryChatPage() {
                 Memory Chat
               </h1>
               <p className="text-sm text-muted-foreground mt-0.5">
-                Ask questions about your team's decisions, action items and conversations.
+                Ask questions about your team&apos;s decisions, action items and conversations.
               </p>
               {workspaceName && (
                 <p className="text-xs text-muted-foreground/70 mt-1 flex items-center gap-1.5">
@@ -370,7 +376,7 @@ export default function MemoryChatPage() {
           }}>
             <h2 className="text-2xl font-semibold tracking-tight">Memory Chat</h2>
             <p className="text-sm text-muted-foreground max-w-md leading-relaxed text-center">
-              Ask questions about your team's decisions, action items and conversations.
+              Ask questions about your team&apos;s decisions, action items and conversations.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-[600px]">
               {suggestions.map((q, i) => (
